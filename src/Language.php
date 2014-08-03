@@ -1292,10 +1292,7 @@ class Language
 
 		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
 
-		/**
-		 * @ignore
-		 * @var $file \SplFileInfo
-		 */
+		/** @var \SplFileInfo $file */
 		foreach ($iterator as $file)
 		{
 			$langs    = array();
@@ -1359,10 +1356,7 @@ class Language
 
 		$metadata = array();
 
-		/**
-		 * @ignore
-		 * @var $child \SimpleXMLElement
-		 */
+		/** @var \SimpleXMLElement $child */
 		foreach ($xml->metadata->children() as $child)
 		{
 			$metadata[$child->getName()] = (string) $child;
