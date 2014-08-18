@@ -832,6 +832,7 @@ class Language
 	 */
 	protected function parse($filename)
 	{
+		$track_errors = null;
 		if ($this->debug)
 		{
 			// Capture hidden PHP errors from the parsing.
@@ -1291,6 +1292,7 @@ class Language
 
 		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
 
+		/** @var \SplFileInfo $file */
 		foreach ($iterator as $file)
 		{
 			$langs    = array();
@@ -1354,6 +1356,7 @@ class Language
 
 		$metadata = array();
 
+		/** @var \SimpleXMLElement $child */
 		foreach ($xml->metadata->children() as $child)
 		{
 			$metadata[$child->getName()] = (string) $child;
