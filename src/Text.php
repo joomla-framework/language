@@ -327,18 +327,19 @@ class Text
 	 * Translate a string into the current language and stores it in the JavaScript language store.
 	 *
 	 * @param   string   $string                The Text key.
-	 * @param   array    $jsSafe                Ensure the output is JavaScript safe.
+	 * @param   mixed    $jsSafe                Ensure the output is JavaScript safe. Passing in an array is deprecated from 2.0
 	 * @param   boolean  $interpretBackSlashes  Interpret \t and \n.
 	 *
 	 * @return  array
 	 *
 	 * @since   1.0
 	 */
-	public function script($string = null, $jsSafe = array(), $interpretBackSlashes = true)
+	public function script($string = null, $jsSafe = false, $interpretBackSlashes = true)
 	{
 		// Add the string to the array if not null.
 		if ($string !== null)
 		{
+			// @deprecated Passing in an array for the js parameter is deprecated
 			if (is_array($jsSafe))
 			{
 				if (array_key_exists('interpretBackSlashes', $jsSafe))
