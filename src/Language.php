@@ -200,7 +200,7 @@ class Language
 		$this->strings  = array();
 		$this->helper   = new LanguageHelper;
 
-		$lang = ($lang == null) ? $this->default : $lang;
+		$lang = $lang ? $lang : $this->default;
 
 		$this->setLanguage($lang);
 		$this->setDebug($debug);
