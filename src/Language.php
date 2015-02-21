@@ -553,7 +553,6 @@ class Language
 		$debug = $this->getDebug();
 		$this->debug = false;
 		$errors = array();
-		$php_errormsg = null;
 
 		// Open the file as a stream.
 		$file = new \SplFileObject($filename);
@@ -616,11 +615,6 @@ class Language
 		if (count($errors))
 		{
 			$this->errorfiles[$filename] = $filename . ' - error(s) in line(s) ' . implode(', ', $errors);
-		}
-		elseif ($php_errormsg)
-		{
-			// We didn't find any errors but there's probably a parse notice.
-			$this->errorfiles['PHP' . $filename] = 'PHP parser errors -' . $php_errormsg;
 		}
 
 		$this->debug = $debug;
