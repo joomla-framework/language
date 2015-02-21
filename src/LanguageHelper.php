@@ -48,22 +48,23 @@ class LanguageHelper
 	{
 		// Look for a language specific localise class
 		$class = str_replace('-', '_', $lang . 'Localise');
-		$paths = array();
 
-		$paths[0] = $basePath . "/overrides/$lang.localise.php";
-		$paths[1] = $basePath . "/$lang/$lang.localise.php";
+		$paths = new \SplPriorityQueue;
+		$paths->insert($basePath . "/overrides/" . $lang . ".localise.php", 10);
+		$paths->insert($basePath . "/" . $lang . "/" . $lang . ".localise.php", 1);
 
-		ksort($paths);
-		$path = reset($paths);
+		$paths->top();
 
-		while (!class_exists($class) && $path)
+		while (!class_exists($class) && $paths->valid())
 		{
+			$path = $paths->current();
+
 			if (file_exists($path))
 			{
 				require_once $path;
 			}
 
-			$path = next($paths);
+			$paths->next();
 		}
 
 		// If we have found a match initialise it and return it
