@@ -8,15 +8,6 @@
 
 namespace Joomla\Language;
 
-use Joomla\String\String;
-
-/**
- * Allows for quoting in language .ini files.
- *
- * @deprecated  2.0
- */
-define('_QQ_', '"');
-
 /**
  * Languages/translation handler class
  *
@@ -24,14 +15,6 @@ define('_QQ_', '"');
  */
 class Language
 {
-	/**
-	 * Language instance container
-	 *
-	 * @var    array
-	 * @since  1.0
-	 */
-	protected static $languages = array();
-
 	/**
 	 * Debug language, If true, highlights if string isn't found.
 	 *
@@ -129,74 +112,59 @@ class Language
 	protected $override = array();
 
 	/**
-	 * Name of the transliterator function for this language.
+	 * The localisation object.
+	 *
+	 * @var    LocaliseInterface
+	 * @since  __DEPLOY_VERSION__
+	 */
+	protected $localise = null;
+
+	/**
+	 * LanguageHelper object
+	 *
+	 * @var    LanguageHelper
+	 * @since  __DEPLOY_VERSION__
+	 */
+	protected $helper;
+
+	/**
+	 * The base path to the language folder
 	 *
 	 * @var    string
-	 * @since  1.0
+	 * @since  __DEPLOY_VERSION__
 	 */
-	protected $transliterator = null;
-
-	/**
-	 * Name of the pluralSuffixesCallback function for this language.
-	 *
-	 * @var    callable
-	 * @since  1.0
-	 */
-	protected $pluralSuffixesCallback = null;
-
-	/**
-	 * Name of the ignoredSearchWordsCallback function for this language.
-	 *
-	 * @var    callable
-	 * @since  1.0
-	 */
-	protected $ignoredSearchWordsCallback = null;
-
-	/**
-	 * Name of the lowerLimitSearchWordCallback function for this language.
-	 *
-	 * @var    callable
-	 * @since  1.0
-	 */
-	protected $lowerLimitSearchWordCallback = null;
-
-	/**
-	 * Name of the uppperLimitSearchWordCallback function for this language
-	 *
-	 * @var    callable
-	 * @since  1.0
-	 */
-	protected $upperLimitSearchWordCallback = null;
-
-	/**
-	 * Name of the searchDisplayedCharactersNumberCallback function for this language.
-	 *
-	 * @var    callable
-	 * @since  1.0
-	 */
-	protected $searchDisplayedCharactersNumberCallback = null;
+	protected $basePath;
 
 	/**
 	 * Constructor activating the default information of the language.
 	 *
+	 * @param   string   $path   The base path to the language folder
 	 * @param   string   $lang   The language
 	 * @param   boolean  $debug  Indicates if language debugging is enabled.
 	 *
 	 * @since   1.0
 	 */
-	public function __construct($lang = null, $debug = false)
+	public function __construct($path, $lang = null, $debug = false)
 	{
-		$this->strings = array();
-
-		if ($lang == null)
+		if ($path === null)
 		{
-			$lang = $this->default;
+			throw new \InvalidArgumentException(
+				'The $path variable cannot be null when creating a new Language object'
+			);
 		}
 
-		$this->setLanguage($lang);
+		$this->basePath = $path;
+		$this->strings  = array();
+		$this->helper   = new LanguageHelper;
+
+		$this->lang = ($lang == null) ? $this->default : $lang;
+
+		$this->metadata = $this->helper->getMetadata($this->lang, $this->basePath);
 		$this->setDebug($debug);
 
-		$filename = JPATH_ROOT . "/language/overrides/$lang.override.ini";
+		$basePath = $this->helper->getLanguagePath($this->basePath);
+
+		$filename = $basePath . "/overrides/$lang.override.ini";
 
 		if (file_exists($filename) && $contents = $this->parse($filename))
 		{
@@ -210,102 +178,11 @@ class Language
 			unset($contents);
 		}
 
-		// Look for a language specific localise class
-		$class = str_replace('-', '_', $lang . 'Localise');
-		$paths = array();
-
-		$basePath = self::getLanguagePath(JPATH_ROOT);
-
-		$paths[0] = $basePath . "/overrides/$lang.localise.php";
-		$paths[1] = $basePath . "/$lang/$lang.localise.php";
-
-		ksort($paths);
-		$path = reset($paths);
-
-		while (!class_exists($class) && $path)
-		{
-			if (file_exists($path))
-			{
-				require_once $path;
-			}
-
-			$path = next($paths);
-		}
-
-		if (class_exists($class))
-		{
-			/* Class exists. Try to find
-			 * -a transliterate method,
-			 * -a getPluralSuffixes method,
-			 * -a getIgnoredSearchWords method
-			 * -a getLowerLimitSearchWord method
-			 * -a getUpperLimitSearchWord method
-			 * -a getSearchDisplayCharactersNumber method
-			 */
-			if (method_exists($class, 'transliterate'))
-			{
-				$this->transliterator = array($class, 'transliterate');
-			}
-
-			if (method_exists($class, 'getPluralSuffixes'))
-			{
-				$this->pluralSuffixesCallback = array($class, 'getPluralSuffixes');
-			}
-
-			if (method_exists($class, 'getIgnoredSearchWords'))
-			{
-				$this->ignoredSearchWordsCallback = array($class, 'getIgnoredSearchWords');
-			}
-
-			if (method_exists($class, 'getLowerLimitSearchWord'))
-			{
-				$this->lowerLimitSearchWordCallback = array($class, 'getLowerLimitSearchWord');
-			}
-
-			if (method_exists($class, 'getUpperLimitSearchWord'))
-			{
-				$this->upperLimitSearchWordCallback = array($class, 'getUpperLimitSearchWord');
-			}
-
-			if (method_exists($class, 'getSearchDisplayedCharactersNumber'))
-			{
-				$this->searchDisplayedCharactersNumberCallback = array($class, 'getSearchDisplayedCharactersNumber');
-			}
-		}
+		// Grab a localisation file
+		$factory = new LanguageFactory;
+		$this->localise = $factory->getLocalise($lang, $path);
 
 		$this->load();
-	}
-
-	/**
-	 * Returns a language object.
-	 *
-	 * @param   string   $lang   The language to use.
-	 * @param   boolean  $debug  The debug mode.
-	 *
-	 * @return  Language  The Language object.
-	 *
-	 * @since   1.0
-	 */
-	public static function getInstance($lang = null, $debug = false)
-	{
-		if (!isset(self::$languages[$lang . $debug]))
-		{
-			$language = new self($lang, $debug);
-
-			self::$languages[$lang . $debug] = $language;
-
-			/*
-			 * Check if Language was instantiated with a null $lang param;
-			 * if so, retrieve the language code from the object and store
-			 * the instance with the language code as well
-			 */
-			if (is_null($lang))
-			{
-				self::$languages[$language->getLanguage() . $debug] = $language;
-			}
-		}
-
-		return self::$languages[$lang . $debug];
 	}
 
 	/**
@@ -319,9 +196,29 @@ class Language
 	 *
 	 * @return  string  The translation of the string
 	 *
+	 * @see     Language::translate()
 	 * @since   1.0
+	 * @deprecated  3.0  Use translate instead
 	 */
 	public function _($string, $jsSafe = false, $interpretBackSlashes = true)
+	{
+		return $this->translate($string, $jsSafe, $interpretBackSlashes);
+	}
+
+	/**
+	 * Translate function, mimics the php gettext (alias _) function.
+	 *
+	 * The function checks if $jsSafe is true, then if $interpretBackslashes is true.
+	 *
+	 * @param   string   $string                The string to translate
+	 * @param   boolean  $jsSafe                Make the result javascript safe
+	 * @param   boolean  $interpretBackSlashes  Interpret \t and \n
+	 *
+	 * @return  string  The translation of the string
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function translate($string, $jsSafe = false, $interpretBackSlashes = true)
 	{
 		// Detect empty string
 		if ($string == '')
@@ -395,52 +292,15 @@ class Language
 	 */
 	public function transliterate($string)
 	{
-		if ($this->transliterator !== null)
-		{
-			return call_user_func($this->transliterator, $string);
-		}
+		$string = $this->localise->transliterate($string);
 
-		$string = Transliterate::utf8_latin_to_ascii($string);
-		$lowercaseString = String::strtolower($string);
-
-		// String can return false if there isn't a fully valid UTF-8 string entered
-		if ($lowercaseString == false)
+		// The transliterate method can return false if there isn't a fully valid UTF-8 string entered
+		if ($string === false)
 		{
 			throw new \RuntimeException('Invalid UTF-8 was detected in the string "%s"', $lowercaseString);
 		}
 
-		return $lowercaseString;
-	}
-
-	/**
-	 * Getter for transliteration function
-	 *
-	 * @return  callable  The transliterator function
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This method will be removed in version 2.0.
-	 */
-	public function getTransliterator()
-	{
-		return $this->transliterator;
-	}
-
-	/**
-	 * Set the transliteration function.
-	 *
-	 * @param   callable  $function  Function name or the actual function.
-	 *
-	 * @return  callable  The previous function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  The transliterator must be set in a language's localise file.
-	 */
-	public function setTransliterator($function)
-	{
-		$previous = $this->transliterator;
-		$this->transliterator = $function;
-
-		return $previous;
+		return $string;
 	}
 
 	/**
@@ -448,255 +308,13 @@ class Language
 	 *
 	 * @param   integer  $count  The count number the rule is for.
 	 *
-	 * @return  array    The array of suffixes.
+	 * @return  string[]  The array of suffixes.
 	 *
 	 * @since   1.0
 	 */
 	public function getPluralSuffixes($count)
 	{
-		if ($this->pluralSuffixesCallback !== null)
-		{
-			return call_user_func($this->pluralSuffixesCallback, $count);
-		}
-		else
-		{
-			return array((string) $count);
-		}
-	}
-
-	/**
-	 * Getter for pluralSuffixesCallback function.
-	 *
-	 * @return  callable  Function name or the actual function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This method will be removed in version 2.0.
-	 */
-	public function getPluralSuffixesCallback()
-	{
-		return $this->pluralSuffixesCallback;
-	}
-
-	/**
-	 * Set the pluralSuffixes function.
-	 *
-	 * @param   callable  $function  Function name or actual function.
-	 *
-	 * @return  callable  The previous function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  The plural suffix method must be set in a language's localise file.
-	 */
-	public function setPluralSuffixesCallback($function)
-	{
-		$previous = $this->pluralSuffixesCallback;
-		$this->pluralSuffixesCallback = $function;
-
-		return $previous;
-	}
-
-	/**
-	 * Returns an array of ignored search words
-	 *
-	 * @return  array  The array of ignored search words.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getIgnoredSearchWords()
-	{
-		if ($this->ignoredSearchWordsCallback !== null)
-		{
-			return call_user_func($this->ignoredSearchWordsCallback);
-		}
-		else
-		{
-			return array();
-		}
-	}
-
-	/**
-	 * Getter for ignoredSearchWordsCallback function.
-	 *
-	 * @return  callable  Function name or the actual function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getIgnoredSearchWordsCallback()
-	{
-		return $this->ignoredSearchWordsCallback;
-	}
-
-	/**
-	 * Setter for the ignoredSearchWordsCallback function
-	 *
-	 * @param   callable  $function  Function name or actual function.
-	 *
-	 * @return  callable  The previous function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function setIgnoredSearchWordsCallback($function)
-	{
-		$previous = $this->ignoredSearchWordsCallback;
-		$this->ignoredSearchWordsCallback = $function;
-
-		return $previous;
-	}
-
-	/**
-	 * Returns a lower limit integer for length of search words
-	 *
-	 * @return  integer  The lower limit integer for length of search words (3 if no value was set for a specific language).
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getLowerLimitSearchWord()
-	{
-		if ($this->lowerLimitSearchWordCallback !== null)
-		{
-			return call_user_func($this->lowerLimitSearchWordCallback);
-		}
-		else
-		{
-			return 3;
-		}
-	}
-
-	/**
-	 * Getter for lowerLimitSearchWordCallback function
-	 *
-	 * @return  callable  Function name or the actual function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getLowerLimitSearchWordCallback()
-	{
-		return $this->lowerLimitSearchWordCallback;
-	}
-
-	/**
-	 * Setter for the lowerLimitSearchWordCallback function.
-	 *
-	 * @param   callable  $function  Function name or actual function.
-	 *
-	 * @return  callable  The previous function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function setLowerLimitSearchWordCallback($function)
-	{
-		$previous = $this->lowerLimitSearchWordCallback;
-		$this->lowerLimitSearchWordCallback = $function;
-
-		return $previous;
-	}
-
-	/**
-	 * Returns an upper limit integer for length of search words
-	 *
-	 * @return  integer  The upper limit integer for length of search words (20 if no value was set for a specific language).
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getUpperLimitSearchWord()
-	{
-		if ($this->upperLimitSearchWordCallback !== null)
-		{
-			return call_user_func($this->upperLimitSearchWordCallback);
-		}
-		else
-		{
-			return 20;
-		}
-	}
-
-	/**
-	 * Getter for upperLimitSearchWordCallback function
-	 *
-	 * @return  callable  Function name or the actual function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getUpperLimitSearchWordCallback()
-	{
-		return $this->upperLimitSearchWordCallback;
-	}
-
-	/**
-	 * Setter for the upperLimitSearchWordCallback function
-	 *
-	 * @param   callable  $function  Function name or the actual function.
-	 *
-	 * @return  callable  The previous function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function setUpperLimitSearchWordCallback($function)
-	{
-		$previous = $this->upperLimitSearchWordCallback;
-		$this->upperLimitSearchWordCallback = $function;
-
-		return $previous;
-	}
-
-	/**
-	 * Returns the number of characters displayed in search results.
-	 *
-	 * @return  integer  The number of characters displayed (200 if no value was set for a specific language).
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getSearchDisplayedCharactersNumber()
-	{
-		if ($this->searchDisplayedCharactersNumberCallback !== null)
-		{
-			return call_user_func($this->searchDisplayedCharactersNumberCallback);
-		}
-		else
-		{
-			return 200;
-		}
-	}
-
-	/**
-	 * Getter for searchDisplayedCharactersNumberCallback function
-	 *
-	 * @return  callable  Function name or the actual function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function getSearchDisplayedCharactersNumberCallback()
-	{
-		return $this->searchDisplayedCharactersNumberCallback;
-	}
-
-	/**
-	 * Setter for the searchDisplayedCharactersNumberCallback function.
-	 *
-	 * @param   callable  $function  Function name or the actual function.
-	 *
-	 * @return  callable  The previous function.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  This functionality will be removed in version 2.0
-	 */
-	public function setSearchDisplayedCharactersNumberCallback($function)
-	{
-		$previous = $this->searchDisplayedCharactersNumberCallback;
-		$this->searchDisplayedCharactersNumberCallback = $function;
-
-		return $previous;
+		return $this->localise->getPluralSuffixes($count);
 	}
 
 	/**
@@ -709,30 +327,15 @@ class Language
 	 *
 	 * @return  boolean  True if the language exists.
 	 *
+	 * @see     LanguageHelper::exists()
 	 * @since   1.0
+	 * @deprecated  3.0  Use LanguageHelper::exists() instead
 	 */
-	public static function exists($lang, $basePath = JPATH_ROOT)
+	public static function exists($lang, $basePath = '')
 	{
-		static $paths = array();
+		$helper = new LanguageHelper;
 
-		// Return false if no language was specified
-		if (!$lang)
-		{
-			return false;
-		}
-
-		$path = $basePath . '/language/' . $lang;
-
-		// Return previous check results if it exists
-		if (isset($paths[$path]))
-		{
-			return $paths[$path];
-		}
-
-		// Check if the language exists
-		$paths[$path] = is_dir($path);
-
-		return $paths[$path];
+		return $helper->exists($lang, $basePath);
 	}
 
 	/**
@@ -748,14 +351,12 @@ class Language
 	 *
 	 * @since   1.0
 	 */
-	public function load($extension = 'joomla', $basePath = JPATH_ROOT, $lang = null, $reload = false, $default = true)
+	public function load($extension = 'joomla', $basePath = '', $lang = null, $reload = false, $default = true)
 	{
-		if (!$lang)
-		{
-			$lang = $this->lang;
-		}
+		$lang     = !$lang ? $this->lang : $lang;
+		$basePath = empty($basePath) ? $this->basePath : $basePath;
 
-		$path = self::getLanguagePath($basePath, $lang);
+		$path = $this->helper->getLanguagePath($basePath, $lang);
 
 		$internal = $extension == 'joomla' || $extension == '';
 		$filename = $internal ? $lang : $lang . '.' . $extension;
@@ -764,29 +365,27 @@ class Language
 		if (isset($this->paths[$extension][$filename]) && !$reload)
 		{
 			// This file has already been tested for loading.
-			$result = $this->paths[$extension][$filename];
+			return $this->paths[$extension][$filename];
 		}
-		else
+
+		// Load the language file
+		$result = $this->loadLanguage($filename, $extension);
+
+		// Check whether there was a problem with loading the file
+		if ($result === false && $default)
 		{
-			// Load the language file
-			$result = $this->loadLanguage($filename, $extension);
+			// No strings, so either file doesn't exist or the file is invalid
+			$oldFilename = $filename;
 
-			// Check whether there was a problem with loading the file
-			if ($result === false && $default)
+			// Check the standard file name
+			$path = $this->helper->getLanguagePath($basePath, $this->default);
+			$filename = $internal ? $this->default : $this->default . '.' . $extension;
+			$filename = "$path/$filename.ini";
+
+			// If the one we tried is different than the new name, try again
+			if ($oldFilename != $filename)
 			{
-				// No strings, so either file doesn't exist or the file is invalid
-				$oldFilename = $filename;
-
-				// Check the standard file name
-				$path = self::getLanguagePath($basePath, $this->default);
-				$filename = $internal ? $this->default : $this->default . '.' . $extension;
-				$filename = "$path/$filename.ini";
-
-				// If the one we tried is different than the new name, try again
-				if ($oldFilename != $filename)
-				{
-					$result = $this->loadLanguage($filename, $extension);
-				}
+				$result = $this->loadLanguage($filename, $extension);
 			}
 		}
 
@@ -854,7 +453,6 @@ class Language
 	 * @return  array  The array of parsed strings.
 	 *
 	 * @since   1.0
-	 * @note    As of 2.0, this method will no longer support parsing _QQ_ into quotes
 	 */
 	protected function parse($filename)
 	{
@@ -866,9 +464,7 @@ class Language
 			ini_set('track_errors', true);
 		}
 
-		$contents = file_get_contents($filename);
-		$contents = str_replace('_QQ_', '"\""', $contents);
-		$strings = @parse_ini_string($contents);
+		$strings = @parse_ini_file($filename);
 
 		if (!is_array($strings))
 		{
@@ -880,85 +476,109 @@ class Language
 			// Restore error tracking to what it was before.
 			ini_set('track_errors', $track_errors);
 
-			// Initialise variables for manually parsing the file for common errors.
-			$blacklist = array('YES', 'NO', 'NULL', 'FALSE', 'ON', 'OFF', 'NONE', 'TRUE');
-			$this->debug = false;
-			$errors = array();
-
-			// Open the file as a stream.
-			$file = new \SplFileObject($filename);
-
-			foreach ($file as $lineNumber => $line)
-			{
-				// Avoid BOM error as BOM is OK when using parse_ini.
-				if ($lineNumber == 0)
-				{
-					$line = str_replace("\xEF\xBB\xBF", '', $line);
-				}
-
-				$line = trim($line);
-
-				// Ignore comment lines.
-				if (!strlen($line) || $line['0'] == ';')
-				{
-					continue;
-				}
-
-				// Ignore grouping tag lines, like: [group]
-				if (preg_match('#^\[[^\]]*\](\s*;.*)?$#', $line))
-				{
-					continue;
-				}
-
-				// Remove the "_QQ_" from the equation
-				$line = str_replace('"_QQ_"', '', $line);
-				$realNumber = $lineNumber + 1;
-
-				// Check for any incorrect uses of _QQ_.
-				if (strpos($line, '_QQ_') !== false)
-				{
-					$errors[] = $realNumber;
-					continue;
-				}
-
-				// Check for odd number of double quotes.
-				if (substr_count($line, '"') % 2 != 0)
-				{
-					$errors[] = $realNumber;
-					continue;
-				}
-
-				// Check that the line passes the necessary format.
-				if (!preg_match('#^[A-Z][A-Z0-9_\-\.]*\s*=\s*".*"(\s*;.*)?$#', $line))
-				{
-					$errors[] = $realNumber;
-					continue;
-				}
-
-				// Check that the key is not in the blacklist.
-				$key = strtoupper(trim(substr($line, 0, strpos($line, '='))));
-
-				if (in_array($key, $blacklist))
-				{
-					$errors[] = $realNumber;
-				}
-			}
-
-			// Check if we encountered any errors.
-			if (count($errors))
-			{
-				$this->errorfiles[$filename] = $filename . ' - error(s) in line(s) ' . implode(', ', $errors);
-			}
-			elseif ($php_errormsg)
-			{
-				// We didn't find any errors but there's probably a parse notice.
-				$this->errorfiles['PHP' . $filename] = 'PHP parser errors -' . $php_errormsg;
-			}
-
-			$this->debug = true;
+			$this->debugFile($filename);
 		}
 
 		return $strings;
+	}
+
+	/**
+	 * Debugs a language file
+	 *
+	 * @param   string  $filename  Absolute path to the file to debug
+	 *
+	 * @return  integer  A count of the number of parsing errors
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function debugFile($filename)
+	{
+		// Make sure our file actually exists
+		if (!file_exists($filename))
+		{
+			throw new \InvalidArgumentException(
+				sprintf('Unable to locate file "%s" for debugging', $filename)
+			);
+		}
+
+		// Initialise variables for manually parsing the file for common errors.
+		$blacklist = array('YES', 'NO', 'NULL', 'FALSE', 'ON', 'OFF', 'NONE', 'TRUE');
+		$debug = $this->getDebug();
+		$this->debug = false;
+		$errors = array();
+		$php_errormsg = null;
+
+		// Open the file as a stream.
+		$file = new \SplFileObject($filename);
+
+		foreach ($file as $lineNumber => $line)
+		{
+			// Avoid BOM error as BOM is OK when using parse_ini.
+			if ($lineNumber == 0)
+			{
+				$line = str_replace("\xEF\xBB\xBF", '', $line);
+			}
+
+			$line = trim($line);
+
+			// Ignore comment lines.
+			if (!strlen($line) || $line['0'] == ';')
+			{
+				continue;
+			}
+
+			// Ignore grouping tag lines, like: [group]
+			if (preg_match('#^\[[^\]]*\](\s*;.*)?$#', $line))
+			{
+				continue;
+			}
+
+			$realNumber = $lineNumber + 1;
+
+			// Check for any incorrect uses of _QQ_.
+			if (strpos($line, '_QQ_') !== false)
+			{
+				$errors[] = $realNumber;
+				continue;
+			}
+
+			// Check for odd number of double quotes.
+			if (substr_count($line, '"') % 2 != 0)
+			{
+				$errors[] = $realNumber;
+				continue;
+			}
+
+			// Check that the line passes the necessary format.
+			if (!preg_match('#^[A-Z][A-Z0-9_\-\.]*\s*=\s*".*"(\s*;.*)?$#', $line))
+			{
+				$errors[] = $realNumber;
+				continue;
+			}
+
+			// Check that the key is not in the blacklist.
+			$key = strtoupper(trim(substr($line, 0, strpos($line, '='))));
+
+			if (in_array($key, $blacklist))
+			{
+				$errors[] = $realNumber;
+			}
+		}
+
+		// Check if we encountered any errors.
+		if (count($errors))
+		{
+			$this->errorfiles[$filename] = $filename . ' - error(s) in line(s) ' . implode(', ', $errors);
+		}
+		elseif ($php_errormsg)
+		{
+			// We didn't find any errors but there's probably a parse notice.
+			$this->errorfiles['PHP' . $filename] = 'PHP parser errors -' . $php_errormsg;
+		}
+
+		$this->debug = $debug;
+
+		return count($errors);
 	}
 
 	/**
@@ -991,11 +611,13 @@ class Language
 	protected function getCallerInfo()
 	{
 		// Try to determine the source if none was provided
+		// @codeCoverageIgnoreStart
 		if (!function_exists('debug_backtrace'))
 		{
 			return null;
 		}
 
+		// @codeCoverageIgnoreEnd
 		$backtrace = debug_backtrace();
 		$info = array();
 
@@ -1057,10 +679,8 @@ class Language
 
 			return null;
 		}
-		else
-		{
-			return $this->paths;
-		}
+
+		return $this->paths;
 	}
 
 	/**
@@ -1202,30 +822,20 @@ class Language
 	/**
 	 * Returns a associative array holding the metadata.
 	 *
-	 * @param   string  $lang  The name of the language.
+	 * @param   string  $lang      The name of the language.
+	 * @param   string  $basePath  The filepath to the language folder.
 	 *
 	 * @return  mixed  If $lang exists return key/value pair with the language metadata, otherwise return NULL.
 	 *
+	 * @see     LanguageHelper::getMetadata()
 	 * @since   1.0
+	 * @deprecated  3.0  Use LanguageHelper::getMetadata() instead
 	 */
-	public static function getMetadata($lang)
+	public static function getMetadata($lang, $basePath)
 	{
-		$path = self::getLanguagePath(JPATH_ROOT, $lang);
-		$file = $lang . '.xml';
+		$helper = new LanguageHelper;
 
-		$result = null;
-
-		if (is_file("$path/$file"))
-		{
-			$result = self::parseXMLLanguageFile("$path/$file");
-		}
-
-		if (empty($result))
-		{
-			return null;
-		}
-
-		return $result;
+		return $helper->getMetadata($lang, $basePath);
 	}
 
 	/**
@@ -1235,14 +845,15 @@ class Language
 	 *
 	 * @return  array  key/value pair with the language file and real name.
 	 *
+	 * @see     LanguageHelper::getKnownLanguages()
 	 * @since   1.0
+	 * @deprecated  3.0  Use LanguageHelper::getKnownLanguages() instead
 	 */
-	public static function getKnownLanguages($basePath = JPATH_ROOT)
+	public static function getKnownLanguages($basePath = '')
 	{
-		$dir = self::getLanguagePath($basePath);
-		$knownLanguages = self::parseLanguageFiles($dir);
+		$helper = new LanguageHelper;
 
-		return $knownLanguages;
+		return $helper->getKnownLanguages($basePath);
 	}
 
 	/**
@@ -1253,18 +864,15 @@ class Language
 	 *
 	 * @return  string  language related path or null.
 	 *
+	 * @see     LanguageHelper::getLanguagePath()
 	 * @since   1.0
+	 * @deprecated  3.0  Use LanguageHelper::getLanguagePath() instead
 	 */
-	public static function getLanguagePath($basePath = JPATH_ROOT, $language = null)
+	public static function getLanguagePath($basePath = '', $language = null)
 	{
-		$dir = $basePath . '/language';
+		$helper = new LanguageHelper;
 
-		if (!empty($language))
-		{
-			$dir .= '/' . $language;
-		}
-
-		return $dir;
+		return $helper->getLanguagePath($basePath, $language);
 	}
 
 	/**
@@ -1277,27 +885,6 @@ class Language
 	public function getLanguage()
 	{
 		return $this->lang;
-	}
-
-	/**
-	 * Set the language attributes to the given language.
-	 *
-	 * Once called, the language still needs to be loaded using Language::load().
-	 *
-	 * @param   string  $lang  Language code.
-	 *
-	 * @return  string  Previous value.
-	 *
-	 * @since   1.0
-	 * @deprecated  2.0  Instantiate a new Language object in the new language instead.
-	 */
-	public function setLanguage($lang)
-	{
-		$previous = $this->lang;
-		$this->lang = $lang;
-		$this->metadata = $this->getMetadata($this->lang);
-
-		return $previous;
 	}
 
 	/**
@@ -1345,42 +932,15 @@ class Language
 	 *
 	 * @return  array  Array holding the found languages as filename => real name pairs.
 	 *
+	 * @see     LanguageHelper::parseLanguageFiles()
 	 * @since   1.0
+	 * @deprecated  3.0  Use LanguageHelper::parseLanguageFiles() instead
 	 */
 	public static function parseLanguageFiles($dir = null)
 	{
-		$languages = array();
+		$helper = new LanguageHelper;
 
-		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
-
-		foreach ($iterator as $file)
-		{
-			$langs    = array();
-			$fileName = $file->getFilename();
-
-			if (!$file->isFile() || !preg_match("/^([-_A-Za-z]*)\.xml$/", $fileName))
-			{
-				continue;
-			}
-
-			try
-			{
-				$metadata = self::parseXMLLanguageFile($file->getRealPath());
-
-				if ($metadata)
-				{
-					$lang = str_replace('.xml', '', $fileName);
-					$langs[$lang] = $metadata;
-				}
-
-				$languages = array_merge($languages, $langs);
-			}
-			catch (\RuntimeException $e)
-			{
-			}
-		}
-
-		return $languages;
+		return $helper->parseLanguageFiles($dir);
 	}
 
 	/**
@@ -1390,37 +950,14 @@ class Language
 	 *
 	 * @return  array  Array holding the found metadata as a key => value pair.
 	 *
+	 * @see     LanguageHelper::parseXMLLanguageFile()
 	 * @since   1.0
-	 * @throws  \RuntimeException
+	 * @deprecated  3.0  Use LanguageHelper::parseXMLLanguageFile() instead
 	 */
 	public static function parseXMLLanguageFile($path)
 	{
-		if (!is_readable($path))
-		{
-			throw new \RuntimeException('File not found or not readable');
-		}
+		$helper = new LanguageHelper;
 
-		// Try to load the file
-		$xml = simplexml_load_file($path);
-
-		if (!$xml)
-		{
-			return null;
-		}
-
-		// Check that it's a metadata file
-		if ((string) $xml->getName() != 'metafile')
-		{
-			return null;
-		}
-
-		$metadata = array();
-
-		foreach ($xml->metadata->children() as $child)
-		{
-			$metadata[$child->getName()] = (string) $child;
-		}
-
-		return $metadata;
+		return $helper->parseXMLLanguageFile($path);
 	}
 }
