@@ -136,6 +136,22 @@ class Language
 	protected $basePath;
 
 	/**
+	 * A string to wrap around translated strings
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
+	protected $translatedWrapper = '**';
+
+	/**
+	 * A string to wrap around untranslated strings
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
+	protected $untranslatedWrapper = '??';
+
+	/**
 	 * Constructor activating the default information of the language.
 	 *
 	 * @param   string   $path   The base path to the language folder
@@ -229,7 +245,7 @@ class Language
 
 		if (isset($this->strings[$key]))
 		{
-			$string = $this->debug ? '**' . $this->strings[$key] . '**' : $this->strings[$key];
+			$string = $this->debug ? $this->translatedWrapper . $this->strings[$key] . $this->translatedWrapper : $this->strings[$key];
 
 			// Store debug information
 			if ($this->debug)
@@ -258,7 +274,7 @@ class Language
 
 				$this->orphans[$key][] = $caller;
 
-				$string = '??' . $string . '??';
+				$string = $this->untranslatedWrapper . $string . $this->untranslatedWrapper;
 			}
 		}
 
