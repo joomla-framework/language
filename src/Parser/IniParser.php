@@ -44,7 +44,7 @@ class IniParser implements DebugParserInterface
 			$line = trim($line);
 
 			// Ignore comment lines.
-			if (!strlen($line) || $line[0] == ';')
+			if (!\strlen($line) || $line[0] == ';')
 			{
 				continue;
 			}
@@ -84,7 +84,7 @@ class IniParser implements DebugParserInterface
 			// Check that the key is not in the blacklist.
 			$key = strtoupper(trim(substr($line, 0, strpos($line, '='))));
 
-			if (in_array($key, $blacklist))
+			if (\in_array($key, $blacklist))
 			{
 				$errors[] = 'The language key "' . $key . '" is a blacklisted key on line ' . $realNumber;
 
