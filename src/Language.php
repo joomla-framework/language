@@ -37,7 +37,7 @@ class Language
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $orphans = array();
+	protected $orphans = [];
 
 	/**
 	 * Array holding the language metadata.
@@ -45,7 +45,7 @@ class Language
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $metadata = null;
+	protected $metadata;
 
 	/**
 	 * Array holding the language locale or boolean null if none.
@@ -53,7 +53,7 @@ class Language
 	 * @var    array|boolean
 	 * @since  1.0
 	 */
-	protected $locale = null;
+	protected $locale;
 
 	/**
 	 * The language to load.
@@ -61,7 +61,7 @@ class Language
 	 * @var    string
 	 * @since  1.0
 	 */
-	protected $lang = null;
+	protected $lang;
 
 	/**
 	 * A nested array of language files that have been loaded
@@ -69,7 +69,7 @@ class Language
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $paths = array();
+	protected $paths = [];
 
 	/**
 	 * List of language files that are in error state
@@ -77,7 +77,7 @@ class Language
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $errorfiles = array();
+	protected $errorfiles = [];
 
 	/**
 	 * An array of used text, used during debugging.
@@ -85,7 +85,7 @@ class Language
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $used = array();
+	protected $used = [];
 
 	/**
 	 * Counter for number of loads.
@@ -101,7 +101,7 @@ class Language
 	 * @var    array
 	 * @since  1.0
 	 */
-	protected $override = array();
+	protected $override = [];
 
 	/**
 	 * The localisation object.
@@ -109,7 +109,7 @@ class Language
 	 * @var    LocaliseInterface
 	 * @since  __DEPLOY_VERSION__
 	 */
-	protected $localise = null;
+	protected $localise;
 
 	/**
 	 * LanguageHelper object
@@ -178,7 +178,7 @@ class Language
 
 		if (file_exists($filename) && $contents = $this->parse($filename))
 		{
-			if (is_array($contents))
+			if (\is_array($contents))
 			{
 				// Sort the underlying heap by key values to optimize merging
 				ksort($contents, SORT_STRING);
@@ -293,7 +293,7 @@ class Language
 			if (strpos($string, '\\') !== false)
 			{
 				// Interpret \n and \t characters
-				$string = str_replace(['\\\\', '\t', '\n'], ["\\", "\t", "\n"], $string);
+				$string = str_replace(['\\\\', '\t', '\n'], ['\\', "\t", "\n"], $string);
 			}
 		}
 
@@ -374,13 +374,12 @@ class Language
 	 * @param   string   $basePath   The basepath to use.
 	 * @param   string   $lang       The language to load, default null for the current language.
 	 * @param   boolean  $reload     Flag that will force a language to be reloaded if set to true.
-	 * @param   boolean  $default    Flag that force the default language to be loaded if the current does not exist.
 	 *
 	 * @return  boolean  True if the file has successfully loaded.
 	 *
 	 * @since   1.0
 	 */
-	public function load($extension = 'joomla', $basePath = '', $lang = null, $reload = false, $default = true)
+	public function load($extension = 'joomla', $basePath = '', $lang = null, $reload = false)
 	{
 		$lang     = $lang ?: $this->lang;
 		$basePath = $basePath ?: $this->basePath;
@@ -398,27 +397,7 @@ class Language
 		}
 
 		// Load the language file
-		$result = $this->loadLanguage($filename, $extension);
-
-		// Check whether there was a problem with loading the file
-		if ($result === false && $default)
-		{
-			// No strings, so either file doesn't exist or the file is invalid
-			$oldFilename = $filename;
-
-			// Check the standard file name
-			$path     = $this->helper->getLanguagePath($basePath, $this->default);
-			$filename = $internal ? $this->default : $this->default . '.' . $extension;
-			$filename = "$path/$filename.ini";
-
-			// If the one we tried is different than the new name, try again
-			if ($oldFilename != $filename)
-			{
-				$result = $this->loadLanguage($filename, $extension);
-			}
-		}
-
-		return $result;
+		return $this->loadLanguage($filename, $extension);
 	}
 
 	/**
@@ -448,7 +427,7 @@ class Language
 
 		if ($strings)
 		{
-			if (is_array($strings) && count($strings))
+			if (\is_array($strings) && \count($strings))
 			{
 				$this->catalogue->addMessages(array_replace($strings, $this->override));
 				$result = true;
@@ -504,7 +483,7 @@ class Language
 			$this->debugFile($filename);
 		}
 
-		return is_array($strings) ? $strings : [];
+		return \is_array($strings) ? $strings : [];
 	}
 
 	/**
@@ -540,7 +519,7 @@ class Language
 		$errors = $parser->debugFile($filename);
 
 		// Check if we encountered any errors.
-		if (count($errors))
+		if (\count($errors))
 		{
 			$this->errorfiles[$filename] = $filename . ' - error(s) ' . implode(', ', $errors);
 		}
@@ -552,7 +531,7 @@ class Language
 
 		$this->setDebug($debug);
 
-		return count($errors);
+		return \count($errors);
 	}
 
 	/**
@@ -585,20 +564,18 @@ class Language
 	/**
 	 * Determine who called Language or Text.
 	 *
-	 * @return  array  Caller information.
+	 * @return  mixed  Caller information or null if unavailable
 	 *
 	 * @since   1.0
 	 */
 	protected function getCallerInfo()
 	{
 		// Try to determine the source if none was provided
-		// @codeCoverageIgnoreStart
-		if (!function_exists('debug_backtrace'))
+		if (!\function_exists('debug_backtrace'))
 		{
-			return null;
+			return;
 		}
 
-		// @codeCoverageIgnoreEnd
 		$backtrace = debug_backtrace();
 		$info      = [];
 
@@ -747,7 +724,7 @@ class Language
 	 */
 	public function setDefault($lang)
 	{
-		$previous = $this->default;
+		$previous      = $this->default;
 		$this->default = $lang;
 
 		return $previous;
@@ -895,6 +872,20 @@ class Language
 	}
 
 	/**
+	 * Set the message catalogue for the language.
+	 *
+	 * @param   MessageCatalogue  $catalogue  The message catalogue to use.
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function setCatalogue(MessageCatalogue $catalogue)
+	{
+		$this->catalogue = $catalogue;
+	}
+
+	/**
 	 * Get the language locale based on current language.
 	 *
 	 * @return  array  The locale according to the language.
@@ -955,7 +946,7 @@ class Language
 	 *
 	 * @param   string  $path  Path to the XML files.
 	 *
-	 * @return  array  Array holding the found metadata as a key => value pair.
+	 * @return  mixed  Array holding the found metadata as a key => value pair or null on an invalid XML file
 	 *
 	 * @see     LanguageHelper::parseXMLLanguageFile()
 	 * @since   1.0
