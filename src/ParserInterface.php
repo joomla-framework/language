@@ -15,24 +15,24 @@ namespace Joomla\Language;
  */
 interface ParserInterface
 {
-	/**
-	 * Get the type of loader
-	 *
-	 * @return  string
-	 *
-	 * @since   2.0.0-alpha
-	 */
-	public function getType(): string;
+    /**
+     * Get the type of loader
+     *
+     * @return  string
+     *
+     * @since   2.0.0-alpha
+     */
+    public function getType(): string;
 
-	/**
-	 * Load the strings from a file
-	 *
-	 * @param   string  $filename  The name of the file.
-	 *
-	 * @return  string[]
-	 *
-	 * @since   2.0.0-alpha
-	 * @throws  \RuntimeException on a load/parse error
-	 */
-	public function loadFile(string $filename): array;
+    /**
+     * Load the strings from a file
+     *
+     * @param   string  $filename  The name of the file.
+     *
+     * @return  string[]
+     *
+     * @since   2.0.0-alpha
+     * @throws  \RuntimeException on a load/parse error
+     */
+    public function loadFile(string $filename): array;
 }

@@ -17,30 +17,30 @@ use PHPUnit\Framework\TestCase;
  */
 class AbstractLocaliseTest extends TestCase
 {
-	/**
-	 * @testdox  Verify that the transliterate method calls the defined transliterator
-	 *
-	 * @covers   Joomla\Language\Localise\AbstractLocalise
-	 * @uses     Joomla\Language\Transliterate
-	 */
-	public function testTransliterateCallsDefinedTransliterator()
-	{
-		/** @var AbstractLocalise|MockObject $localise */
-		$localise = $this->getMockForAbstractClass(AbstractLocalise::class);
+    /**
+     * @testdox  Verify that the transliterate method calls the defined transliterator
+     *
+     * @covers   Joomla\Language\Localise\AbstractLocalise
+     * @uses     Joomla\Language\Transliterate
+     */
+    public function testTransliterateCallsDefinedTransliterator()
+    {
+        /** @var AbstractLocalise|MockObject $localise */
+        $localise = $this->getMockForAbstractClass(AbstractLocalise::class);
 
-		$this->assertSame('asi', $localise->transliterate('Así'));
-	}
+        $this->assertSame('asi', $localise->transliterate('Así'));
+    }
 
-	/**
-	 * @testdox  Verify that the plural suffixes are returned
-	 *
-	 * @covers   Joomla\Language\Localise\AbstractLocalise
-	 */
-	public function testGetPluralSuffixesCallsTheDefinedMethod()
-	{
-		/** @var AbstractLocalise|MockObject $localise */
-		$localise = $this->getMockForAbstractClass(AbstractLocalise::class);
+    /**
+     * @testdox  Verify that the plural suffixes are returned
+     *
+     * @covers   Joomla\Language\Localise\AbstractLocalise
+     */
+    public function testGetPluralSuffixesCallsTheDefinedMethod()
+    {
+        /** @var AbstractLocalise|MockObject $localise */
+        $localise = $this->getMockForAbstractClass(AbstractLocalise::class);
 
-		$this->assertSame(['1'], $localise->getPluralSuffixes(1));
-	}
+        $this->assertSame(['1'], $localise->getPluralSuffixes(1));
+    }
 }

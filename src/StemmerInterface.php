@@ -15,15 +15,15 @@ namespace Joomla\Language;
  */
 interface StemmerInterface
 {
-	/**
-	 * Method to stem a token and return the root.
-	 *
-	 * @param   string  $token  The token to stem.
-	 * @param   string  $lang   The language of the token.
-	 *
-	 * @return  string  The root token.
-	 *
-	 * @since   1.4.0
-	 */
-	public function stem($token, $lang);
+    /**
+     * Method to stem a token and return the root.
+     *
+     * @param   string  $token  The token to stem.
+     * @param   string  $lang   The language of the token.
+     *
+     * @return  string  The root token.
+     *
+     * @since   1.4.0
+     */
+    public function stem($token, $lang);
 }

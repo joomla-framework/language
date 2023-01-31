@@ -15,28 +15,28 @@ namespace Joomla\Language;
  */
 interface LocaliseInterface
 {
-	/**
-	 * Transliterate function
-	 *
-	 * This method processes a string and replaces all accented UTF-8 characters by unaccented
-	 * ASCII-7 "equivalents".
-	 *
-	 * @param   string  $string  The string to transliterate.
-	 *
-	 * @return  string|boolean  The transliterated string or boolean false on a failure
-	 *
-	 * @since   2.0.0-alpha
-	 */
-	public function transliterate($string);
+    /**
+     * Transliterate function
+     *
+     * This method processes a string and replaces all accented UTF-8 characters by unaccented
+     * ASCII-7 "equivalents".
+     *
+     * @param   string  $string  The string to transliterate.
+     *
+     * @return  string|boolean  The transliterated string or boolean false on a failure
+     *
+     * @since   2.0.0-alpha
+     */
+    public function transliterate($string);
 
-	/**
-	 * Returns an array of suffixes for plural rules.
-	 *
-	 * @param   integer  $count  The count number the rule is for.
-	 *
-	 * @return  string[]  The array of suffixes.
-	 *
-	 * @since   2.0.0-alpha
-	 */
-	public function getPluralSuffixes($count);
+    /**
+     * Returns an array of suffixes for plural rules.
+     *
+     * @param   integer  $count  The count number the rule is for.
+     *
+     * @return  string[]  The array of suffixes.
+     *
+     * @since   2.0.0-alpha
+     */
+    public function getPluralSuffixes($count);
 }

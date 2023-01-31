@@ -15,14 +15,14 @@ namespace Joomla\Language;
  */
 interface DebugParserInterface extends ParserInterface
 {
-	/**
-	 * Parse a file and check its contents for valid structure
-	 *
-	 * @param   string  $filename  The name of the file.
-	 *
-	 * @return  string[]  Array containing a list of errors
-	 *
-	 * @since   2.0.0-alpha
-	 */
-	public function debugFile(string $filename): array;
+    /**
+     * Parse a file and check its contents for valid structure
+     *
+     * @param   string  $filename  The name of the file.
+     *
+     * @return  string[]  Array containing a list of errors
+     *
+     * @since   2.0.0-alpha
+     */
+    public function debugFile(string $filename): array;
 }

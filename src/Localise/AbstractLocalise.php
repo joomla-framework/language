@@ -19,35 +19,35 @@ use Joomla\String\StringHelper;
  */
 abstract class AbstractLocalise implements LocaliseInterface
 {
-	/**
-	 * Transliterate function
-	 *
-	 * This method processes a string and replaces all accented UTF-8 characters by unaccented ASCII-7 equivalents.
-	 *
-	 * @param   string  $string  The string to transliterate.
-	 *
-	 * @return  string|boolean  The transliterated string or boolean false on a failure
-	 *
-	 * @since   2.0.0-alpha
-	 */
-	public function transliterate($string)
-	{
-		$string = (new Transliterate)->utf8_latin_to_ascii($string);
+    /**
+     * Transliterate function
+     *
+     * This method processes a string and replaces all accented UTF-8 characters by unaccented ASCII-7 equivalents.
+     *
+     * @param   string  $string  The string to transliterate.
+     *
+     * @return  string|boolean  The transliterated string or boolean false on a failure
+     *
+     * @since   2.0.0-alpha
+     */
+    public function transliterate($string)
+    {
+        $string = (new Transliterate())->utf8_latin_to_ascii($string);
 
-		return StringHelper::strtolower($string);
-	}
+        return StringHelper::strtolower($string);
+    }
 
-	/**
-	 * Returns an array of suffixes for plural rules.
-	 *
-	 * @param   integer  $count  The count number the rule is for.
-	 *
-	 * @return  string[]  The array of suffixes.
-	 *
-	 * @since   2.0.0-alpha
-	 */
-	public function getPluralSuffixes($count)
-	{
-		return [(string) $count];
-	}
+    /**
+     * Returns an array of suffixes for plural rules.
+     *
+     * @param   integer  $count  The count number the rule is for.
+     *
+     * @return  string[]  The array of suffixes.
+     *
+     * @since   2.0.0-alpha
+     */
+    public function getPluralSuffixes($count)
+    {
+        return [(string) $count];
+    }
 }
