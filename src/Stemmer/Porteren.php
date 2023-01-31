@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of the Joomla Framework Language Package
  *
@@ -111,8 +112,10 @@ class Porteren implements StemmerInterface
 
             // Check ing and ed
             // Note use of && and OR, for precedence reasons
-            if (preg_match("#$v+#", substr($word, 0, -3)) && $this->replace($word, 'ing', '')
-                || preg_match("#$v+#", substr($word, 0, -2)) && $this->replace($word, 'ed', '')) {
+            if (
+                preg_match("#$v+#", substr($word, 0, -3)) && $this->replace($word, 'ing', '')
+                || preg_match("#$v+#", substr($word, 0, -2)) && $this->replace($word, 'ed', '')
+            ) {
                 // If one of above two test successful
                 if (!$this->replace($word, 'at', 'ate') && !$this->replace($word, 'bl', 'ble') && !$this->replace($word, 'iz', 'ize')) {
                     // Double consonant ending
