@@ -142,7 +142,7 @@ class LanguageFactory
      * @return  StemmerInterface
      *
      * @since   1.3.0
-     * @throws  RuntimeException on invalid stemmer
+     * @throws  \RuntimeException on invalid stemmer
      */
     public function getStemmer($adapter)
     {
