@@ -20,4 +20,9 @@
         <exclude name="Generic.Files.LineLength.MaxExceeded"/>
         <exclude name="Generic.Files.LineLength.TooLong"/>
     </rule>
+
+    <rule ref="Squiz.Classes.ValidClassName.NotCamelCaps">
+        <exclude-pattern type="relative">src/Transliterate\.php</exclude-pattern>
+        <exclude-pattern type="relative">src/Localise/En_GBLocalise\.php</exclude-pattern>
+    </rule>
 </ruleset>
