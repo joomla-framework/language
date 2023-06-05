@@ -21,10 +21,4 @@
         <!-- Required due to methods named with snake case -->
         <exclude name="Joomla.NamingConventions.ValidFunctionName.ScopeNotCamelCaps"/>
     </rule>
-
-    <rule ref="Joomla.Classes.InstantiateNewClasses">
-        <properties>
-            <property name="shortArraySyntax" value="true"/>
-        </properties>
-    </rule>
 </ruleset>
