@@ -1,4 +1,4 @@
-# The Language Package [![Build Status](https://ci.joomla.org/api/badges/joomla-framework/language/status.svg?ref=refs/heads/3.x-dev)](https://ci.joomla.org/joomla-framework/language)
+# The Language Package [![Build Status](https://github.com/joomla-framework/language/actions/workflows/ci.yml/badge.svg?branch=3.x-dev)](https://github.com/joomla-framework/language)
 
 [![Latest Stable Version](https://poser.pugx.org/joomla/language/v/stable)](https://packagist.org/packages/joomla/language)
 [![Total Downloads](https://poser.pugx.org/joomla/language/downloads)](https://packagist.org/packages/joomla/language)
@@ -15,7 +15,7 @@ The Language package provides an interface for managing internationalisation sup
 ## Installation
 
 To install the package, you can simply run the following from the command line:
-           
+
 ```sh
 composer require joomla/language "~3.0"
 ```
