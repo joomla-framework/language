@@ -53,7 +53,7 @@ $languageFactory = $container->get('Joomla\Language\LanguageFactory');
 ### Retrieving a Language instance
 
 The `getLanguage` method is used to retrieve a `Language` instance.  The factory caches a `Language` instance for each language
-that has been requested.  
+that has been requested.
 
 ```php
 /*
@@ -72,7 +72,7 @@ a Factory instance has been stored to a DI container as demonstrated above.
 ```php
 $languageFactory = $container->get('Joomla\Language\LanguageFactory');
 
-$language = $languageFactory->getLangauge();
+$language = $languageFactory->getLanguage();
 ```
 
 ### Retrieving a LocaliseInterface instance
