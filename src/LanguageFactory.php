@@ -118,7 +118,7 @@ class LanguageFactory
                 require_once $path;
 
                 /* @phpstan-ignore if.alwaysFalse */
-                if (class_exists($class)) {
+                if (class_exists($class, false)) {
                     return new $class();
                 }
             }
