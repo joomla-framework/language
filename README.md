@@ -9,19 +9,19 @@ The Language package provides an interface for managing internationalisation sup
 
 ## Requirements
 
-* PHP 8.1 or later
-* Joomla [String](https://github.com/joomla-framework/string) Package 1.3 or later
+* PHP 8.3 or later
+* Joomla [String](https://github.com/joomla-framework/string) Package 4 or later
 
 ## Installation
 
 To install the package, you can simply run the following from the command line:
 
 ```sh
-composer require joomla/language "~3.0"
+composer require joomla/language "~4.0"
 ```
 
 If you want to include the test sources and docs, use
 
 ```sh
-composer require --prefer-source joomla/language "~3.0"
+composer require --prefer-source joomla/language "~4.0"
 ```
