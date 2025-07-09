@@ -73,21 +73,6 @@ class LanguageTest extends TestCase
     }
 
     /**
-     * @testdox  Verify that Language::_() proxies to Language::translate()
-     *
-     * @covers   Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
-    public function testUnderscoreMethodProxiesToTranslate()
-    {
-        $this->assertEmpty($this->object->_(''));
-    }
-
-    /**
      * @testdox  Verify that Language::translate() returns an empty string when one is input
      *
      * @covers   Joomla\Language\Language
@@ -207,22 +192,6 @@ class LanguageTest extends TestCase
     public function testGetPluralSuffixesCallsTheDefinedMethod()
     {
         $this->assertIsArray($this->object->getPluralSuffixes(1));
-    }
-
-    /**
-     * @testdox  Verify that Language::exists() proxies to LanguageHelper::exists()
-     *
-     * @covers   Joomla\Language\Language
-     * @covers   Joomla\Language\LanguageHelper::exists
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
-    public function testVerifyExistsProxiesToLanguageHelper()
-    {
-        $this->assertTrue($this->object->exists('en-GB', $this->testPath));
     }
 
     /**
@@ -652,54 +621,6 @@ class LanguageTest extends TestCase
     }
 
     /**
-     * @testdox  Verify that Language::getMetadata() proxies to LanguageHelper::getMetadata()
-     *
-     * @covers   Joomla\Language\Language
-     * @covers   Joomla\Language\LanguageHelper::getMetadata
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
-    public function testVerifyGetMetadataProxiesToLanguageHelper()
-    {
-        $this->assertIsArray($this->object->getMetadata('en-GB', $this->testPath));
-    }
-
-    /**
-     * @testdox  Verify that Language::getKnownLanguages() proxies to LanguageHelper::getKnownLanguages()
-     *
-     * @covers   Joomla\Language\Language
-     * @covers   Joomla\Language\LanguageHelper::getKnownLanguages
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
-    public function testVerifyGetKnownLanguagesProxiesToLanguageHelper()
-    {
-        $this->assertArrayHasKey('en-GB', $this->object->getKnownLanguages($this->testPath));
-    }
-
-    /**
-     * @testdox  Verify that Language::getLanguagePath() proxies to LanguageHelper::getLanguagePath()
-     *
-     * @covers   Joomla\Language\Language
-     * @covers   Joomla\Language\LanguageHelper::getLanguagePath
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
-    public function testVerifyGetLanguagePathProxiesToLanguageHelper()
-    {
-        $this->assertSame($this->testPath . '/language', $this->object->getLanguagePath($this->testPath));
-    }
-
-    /**
      * @testdox  Verify that Language::getLanguage() default returns 'en-GB'
      *
      * @covers   Joomla\Language\Language
@@ -757,37 +678,5 @@ class LanguageTest extends TestCase
     public function testVerifyTheDefaultReturnForGetWeekEnd()
     {
         $this->assertSame('0,6', $this->object->getWeekEnd());
-    }
-
-    /**
-     * @testdox  Verify that Language::parseLanguageFiles() proxies to LanguageHelper::parseLanguageFiles()
-     *
-     * @covers   Joomla\Language\Language
-     * @covers   Joomla\Language\LanguageHelper::parseLanguageFiles
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
-    public function testVerifyParseLanguageFilesProxiesToLanguageHelper()
-    {
-        $this->assertIsArray($this->object->parseLanguageFiles($this->testPath));
-    }
-
-    /**
-     * @testdox  Verify that Language::parseXMLLanguageFile() proxies to LanguageHelper::parseXMLLanguageFile()
-     *
-     * @covers   Joomla\Language\Language
-     * @covers   Joomla\Language\LanguageHelper::parseXMLLanguageFile
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
-    public function testVerifyParseXMLLanguageFileProxiesToLanguageHelper()
-    {
-        $this->assertIsArray($this->object->parseXMLLanguageFile($this->testPath . '/language/en-GB/en-GB.xml'));
     }
 }

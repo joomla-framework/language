@@ -8,6 +8,7 @@
 namespace Joomla\Language\Tests;
 
 use Joomla\Language\Transliterate;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,7 +39,7 @@ class TransliterateTest extends TestCase
      *
      * @return  array
      */
-    public function dataProvider()
+    public static function dataProvider()
     {
         return [
             ['Weiß', 'Weiss', 0],
@@ -65,10 +66,9 @@ class TransliterateTest extends TestCase
      * @param   string   $result  Expected test result
      * @param   integer  $case    Optionally specify upper or lower case. Default to 0 (both).
      *
-     * @covers  Joomla\Language\Transliterate
-     *
-     * @dataProvider  dataProvider
+     * @covers  \Joomla\Language\Transliterate
      */
+    #[DataProvider('dataProvider')]
     public function testVerifyAUTF8StringIsTransliteratedCorrectly($word, $result, $case)
     {
         $this->assertEquals($result, $this->object->utf8_latin_to_ascii($word, $case));

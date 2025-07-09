@@ -12,6 +12,7 @@ use Joomla\Language\Parser\IniParser;
 use Joomla\Language\ParserRegistry;
 use Joomla\Language\Text;
 use Joomla\Language\Language;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -77,10 +78,9 @@ class TextTest extends TestCase
     /**
      * @testdox  Verify that Text is instantiated correctly
      *
-     * @covers   Joomla\Language\Text
-     *
-     * @doesNotPerformAssertions
+     * @covers   \Joomla\Language\Text
      */
+    #[DoesNotPerformAssertions]
     public function testVerifyThatTextIsInstantiatedCorrectly()
     {
         new Text(new Language($this->parserRegistry, self::$testPath));

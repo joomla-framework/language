@@ -8,6 +8,7 @@
 namespace Joomla\Language\Tests\Stemmer;
 
 use Joomla\Language\Stemmer\Porteren;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,7 +39,7 @@ class PorterenTest extends TestCase
      *
      * @return  array
      */
-    public function dataStemProvider()
+    public static function dataStemProvider()
     {
         return [
             ['Car', 'Car', 'en'],
@@ -160,10 +161,9 @@ class PorterenTest extends TestCase
      * @param   string  $result  The expected result
      * @param   string  $lang    The language of the token.
      *
-     * @covers  Joomla\Language\Stemmer\Porteren
-     *
-     * @dataProvider  dataStemProvider
+     * @covers  \Joomla\Language\Stemmer\Porteren
      */
+    #[DataProvider('dataStemProvider')]
     public function testTheCorrectStemIsReturnedFromAGivenString($token, $result, $lang)
     {
         $this->assertEquals($result, $this->object->stem($token, $lang));
