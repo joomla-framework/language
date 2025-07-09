@@ -136,6 +136,7 @@ class LanguageFactory
      * @return  StemmerInterface
      *
      * @since   1.3.0
+     * @deprecated  5.0  Use wamania/php-stemmer instead
      * @throws  \RuntimeException on invalid stemmer
      */
     public function getStemmer($adapter)
