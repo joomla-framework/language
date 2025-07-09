@@ -177,13 +177,9 @@ class Language
         $filename = $basePath . "/overrides/$lang.override.ini";
 
         if (file_exists($filename) && $contents = $this->parse($filename)) {
-            if (\is_array($contents)) {
-                // Sort the underlying heap by key values to optimize merging
-                ksort($contents, SORT_STRING);
-                $this->override = $contents;
-            }
-
-            unset($contents);
+            // Sort the underlying heap by key values to optimize merging
+            ksort($contents, SORT_STRING);
+            $this->override = $contents;
         }
 
         // Grab a localisation file
@@ -376,14 +372,6 @@ class Language
      */
     protected function parse($filename)
     {
-        // Capture hidden PHP errors from the parsing.
-        if ($this->debug) {
-            // See https://www.php.net/manual/en/reserved.variables.phperrormsg.php
-            $php_errormsg = null;
-            $trackErrors  = ini_get('track_errors');
-            ini_set('track_errors', true);
-        }
-
         try {
             $strings = $this->parserRegistry->get(pathinfo($filename, PATHINFO_EXTENSION))->loadFile($filename);
         } catch (\RuntimeException $exception) {
@@ -391,14 +379,7 @@ class Language
             $strings = [];
         }
 
-        if ($this->debug) {
-            // Restore error tracking to what it was before.
-            ini_set('track_errors', $trackErrors);
-
-            $this->debugFile($filename);
-        }
-
-        return \is_array($strings) ? $strings : [];
+        return $strings;
     }
 
     /**
@@ -420,8 +401,7 @@ class Language
         }
 
         // Initialise variables for manually parsing the file for common errors.
-        $debug        = $this->setDebug(false);
-        $php_errormsg = null;
+        $debug = $this->setDebug(false);
 
         $parser = $this->parserRegistry->get(pathinfo($filename, PATHINFO_EXTENSION));
 
@@ -434,9 +414,6 @@ class Language
         // Check if we encountered any errors.
         if (\count($errors)) {
             $this->errorfiles[$filename] = $filename . ' - error(s) ' . implode(', ', $errors);
-        } elseif ($php_errormsg) {
-            // We didn't find any errors but there's probably a parse notice.
-            $this->errorfiles['PHP' . $filename] = 'PHP parser errors -' . $php_errormsg;
         }
 
         $this->setDebug($debug);
