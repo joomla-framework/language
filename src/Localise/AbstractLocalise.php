@@ -16,7 +16,7 @@ use Joomla\String\StringHelper;
 /**
  * Abstract localisation handler class
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 abstract class AbstractLocalise implements LocaliseInterface
 {
@@ -29,7 +29,7 @@ abstract class AbstractLocalise implements LocaliseInterface
      *
      * @return  string|boolean  The transliterated string or boolean false on a failure
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function transliterate($string)
     {
@@ -45,7 +45,7 @@ abstract class AbstractLocalise implements LocaliseInterface
      *
      * @return  string[]  The array of suffixes.
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getPluralSuffixes($count)
     {

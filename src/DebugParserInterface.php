@@ -12,7 +12,7 @@ namespace Joomla\Language;
 /**
  * Interface describing a language file parser capable of debugging a file
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 interface DebugParserInterface extends ParserInterface
 {
@@ -23,7 +23,7 @@ interface DebugParserInterface extends ParserInterface
      *
      * @return  string[]  Array containing a list of errors
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function debugFile(string $filename): array;
 }

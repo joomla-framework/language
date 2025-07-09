@@ -12,7 +12,7 @@ namespace Joomla\Language;
 /**
  * Registry of file parsers
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 class ParserRegistry
 {
@@ -20,7 +20,7 @@ class ParserRegistry
      * A map of the registered parsers
      *
      * @var    ParserInterface[]
-     * @since  2.0.0-alpha
+     * @since  2.0
      */
     private $parserMap = [];
 
@@ -31,7 +31,7 @@ class ParserRegistry
      *
      * @return  void
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function add(ParserInterface $parser): void
     {
@@ -45,7 +45,7 @@ class ParserRegistry
      *
      * @return  ParserInterface
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function get(string $type): ParserInterface
     {
@@ -63,7 +63,7 @@ class ParserRegistry
      *
      * @return  boolean
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function has(string $type): bool
     {

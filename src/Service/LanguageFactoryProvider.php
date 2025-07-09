@@ -16,7 +16,7 @@ use Joomla\Language\LanguageFactory;
 /**
  * LanguageFactory object service provider
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 class LanguageFactoryProvider implements ServiceProviderInterface
 {
@@ -27,7 +27,7 @@ class LanguageFactoryProvider implements ServiceProviderInterface
      *
      * @return  void
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      * @throws  \RuntimeException
      */
     public function register(Container $container)

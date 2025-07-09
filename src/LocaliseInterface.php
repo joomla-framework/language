@@ -12,7 +12,7 @@ namespace Joomla\Language;
 /**
  * Joomla Framework Language Interface
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 interface LocaliseInterface
 {
@@ -26,7 +26,7 @@ interface LocaliseInterface
      *
      * @return  string|boolean  The transliterated string or boolean false on a failure
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function transliterate($string);
 
@@ -37,7 +37,7 @@ interface LocaliseInterface
      *
      * @return  string[]  The array of suffixes.
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getPluralSuffixes($count);
 }

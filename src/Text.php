@@ -29,7 +29,7 @@ class Text
      *
      * @param   Language  $language  Language instance to use in translations
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function __construct(Language $language)
     {
@@ -41,7 +41,7 @@ class Text
      *
      * @return  Language
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getLanguage(): Language
     {
@@ -55,7 +55,7 @@ class Text
      *
      * @return  $this
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function setLanguage(Language $language): self
     {
@@ -74,7 +74,7 @@ class Text
      *
      * @return  string  The translated string or the key if $script is true
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function translate(string $string, array $parameters = [], bool $jsSafe = false, bool $interpretBackSlashes = true): string
     {

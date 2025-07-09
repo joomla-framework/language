@@ -12,7 +12,7 @@ namespace Joomla\Language;
 /**
  * Helper class for the Language package
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 class LanguageHelper
 {
@@ -26,7 +26,7 @@ class LanguageHelper
      *
      * @return  boolean  True if the language exists.
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function exists(string $lang, string $basePath): bool
     {
@@ -41,7 +41,7 @@ class LanguageHelper
      *
      * @return  array|null  If $lang exists return key/value pair with the language metadata, otherwise return NULL.
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getMetadata(string $lang, string $path): ?array
     {
@@ -68,7 +68,7 @@ class LanguageHelper
      *
      * @return  array  key/value pair with the language file and real name.
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getKnownLanguages(string $basePath): array
     {
@@ -83,7 +83,7 @@ class LanguageHelper
      *
      * @return  string  Path to the language folder
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getLanguagePath(string $basePath, string $language = ''): string
     {
@@ -103,7 +103,7 @@ class LanguageHelper
      *
      * @return  array  Array holding the found languages as filename => real name pairs.
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function parseLanguageFiles(string $dir = ''): array
     {
@@ -140,7 +140,7 @@ class LanguageHelper
      *
      * @return  array|null  Array holding the found metadata as a key => value pair.
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      * @throws  \RuntimeException
      */
     public function parseXmlLanguageFile(string $path): ?array

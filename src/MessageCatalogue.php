@@ -12,7 +12,7 @@ namespace Joomla\Language;
 /**
  * Catalogue of loaded translation strings for a language
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 class MessageCatalogue
 {
@@ -20,7 +20,7 @@ class MessageCatalogue
      * A fallback for this catalogue
      *
      * @var    ?MessageCatalogue
-     * @since  2.0.0-alpha
+     * @since  2.0
      */
     private $fallbackCatalogue;
 
@@ -28,7 +28,7 @@ class MessageCatalogue
      * The language of the messages in this catalogue
      *
      * @var    string
-     * @since  2.0.0-alpha
+     * @since  2.0
      */
     private $language;
 
@@ -36,7 +36,7 @@ class MessageCatalogue
      * The messages stored to this catalogue
      *
      * @var    array
-     * @since  2.0.0-alpha
+     * @since  2.0
      */
     private $messages = [];
 
@@ -46,7 +46,7 @@ class MessageCatalogue
      * @param   string  $language  The language of the messages in this catalogue
      * @param   array   $messages  The messages to seed this catalogue with
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function __construct(string $language, array $messages = [])
     {
@@ -75,7 +75,7 @@ class MessageCatalogue
      *
      * @return  void
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function addMessages(array $messages): void
     {
@@ -89,7 +89,7 @@ class MessageCatalogue
      *
      * @return  boolean
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function definesMessage(string $key): bool
     {
@@ -101,7 +101,7 @@ class MessageCatalogue
      *
      * @return  MessageCatalogue|null
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getFallbackCatalogue(): ?MessageCatalogue
     {
@@ -113,7 +113,7 @@ class MessageCatalogue
      *
      * @return  string
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getLanguage(): string
     {
@@ -127,7 +127,7 @@ class MessageCatalogue
      *
      * @return  string  The message if one is set otherwise the key
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getMessage(string $key): string
     {
@@ -147,7 +147,7 @@ class MessageCatalogue
      *
      * @return  array
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getMessages(): array
     {
@@ -161,7 +161,7 @@ class MessageCatalogue
      *
      * @return  boolean
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function hasMessage(string $key): bool
     {
@@ -183,7 +183,7 @@ class MessageCatalogue
      *
      * @return  void
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      * @throws  \LogicException
      */
     public function mergeCatalogue(MessageCatalogue $messageCatalogue): void
@@ -202,7 +202,7 @@ class MessageCatalogue
      *
      * @return  void
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function setFallbackCatalogue(MessageCatalogue $messageCatalogue): void
     {

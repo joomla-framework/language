@@ -14,7 +14,7 @@ use Joomla\Language\DebugParserInterface;
 /**
  * Language file parser for INI files
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 class IniParser implements DebugParserInterface
 {
@@ -25,7 +25,7 @@ class IniParser implements DebugParserInterface
      *
      * @return  string[]  Array containing a list of errors
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function debugFile(string $filename): array
     {
@@ -93,7 +93,7 @@ class IniParser implements DebugParserInterface
      *
      * @return  string
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getType(): string
     {
@@ -107,7 +107,7 @@ class IniParser implements DebugParserInterface
      *
      * @return  string[]
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      * @throws  \RuntimeException on a load/parse error
      */
     public function loadFile(string $filename): array

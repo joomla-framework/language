@@ -28,7 +28,7 @@ class LanguageFactory
      * Path to the directory containing the application's language folder
      *
      * @var    string
-     * @since  2.0.0-alpha
+     * @since  2.0
      */
     private $languageDirectory = '';
 
@@ -86,7 +86,7 @@ class LanguageFactory
      *
      * @return  LocaliseInterface
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getLocalise(string $lang, string $basePath = ''): LocaliseInterface
     {
@@ -160,7 +160,7 @@ class LanguageFactory
      *
      * @return  Text
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getText(?Language $language = null): Text
     {
@@ -192,7 +192,7 @@ class LanguageFactory
      *
      * @return  $this
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function setLanguageDirectory(string $directory): self
     {

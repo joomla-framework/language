@@ -12,7 +12,7 @@ namespace Joomla\Language;
 /**
  * Interface describing a language file loader
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 interface ParserInterface
 {
@@ -21,7 +21,7 @@ interface ParserInterface
      *
      * @return  string
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      */
     public function getType(): string;
 
@@ -32,7 +32,7 @@ interface ParserInterface
      *
      * @return  string[]
      *
-     * @since   2.0.0-alpha
+     * @since   2.0
      * @throws  \RuntimeException on a load/parse error
      */
     public function loadFile(string $filename): array;

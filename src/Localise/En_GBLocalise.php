@@ -12,7 +12,7 @@ namespace Joomla\Language\Localise;
 /**
  * en-GB localisation handler class
  *
- * @since  2.0.0-alpha
+ * @since  2.0
  */
 class En_GBLocalise extends AbstractLocalise
 {
