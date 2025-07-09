@@ -49,9 +49,9 @@ class Language
     protected $metadata;
 
     /**
-     * Array holding the language locale or boolean null if none.
+     * Array holding the language locale or null.
      *
-     * @var    array|boolean
+     * @var    ?array
      * @since  1.0
      */
     protected $locale;
@@ -271,14 +271,14 @@ class Language
      */
     public function transliterate($string)
     {
-        $string = $this->localise->transliterate($string);
+        $transliterated_string = $this->localise->transliterate($string);
 
         // The transliterate method can return false if there isn't a fully valid UTF-8 string entered
-        if ($string === false) {
-            throw new \RuntimeException('Invalid UTF-8 was detected in the string "%s"', $string);
+        if ($transliterated_string === false) {
+            throw new \RuntimeException(sprintf('Invalid UTF-8 was detected in the string "%s"', $string));
         }
 
-        return $string;
+        return $transliterated_string;
     }
 
     /**
@@ -345,14 +345,11 @@ class Language
         $this->counter++;
 
         $result  = false;
-        $strings = false;
 
         if (file_exists($filename)) {
             $strings = $this->parse($filename);
-        }
 
-        if ($strings) {
-            if (\is_array($strings) && \count($strings)) {
+            if (\count($strings)) {
                 $this->catalogue->addMessages(array_replace($strings, $this->override));
                 $result = true;
             }
