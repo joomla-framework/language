@@ -205,34 +205,6 @@ class Language
      *
      * @return  string  The translation of the string
      *
-     * @see     Language::translate()
-     * @since   1.0
-     * @deprecated  3.0  Use translate instead
-     */
-    public function _($string, $jsSafe = false, $interpretBackSlashes = true)
-    {
-        trigger_deprecation(
-            'joomla/language',
-            '2.0.0',
-            '%s() is deprecated and will be removed in 3.0, use %s::translate() instead.',
-            __METHOD__,
-            self::class
-        );
-
-        return $this->translate((string) $string, (bool) $jsSafe, (bool) $interpretBackSlashes);
-    }
-
-    /**
-     * Translate function, mimics the php gettext (alias _) function.
-     *
-     * The function checks if $jsSafe is true, then if $interpretBackslashes is true.
-     *
-     * @param   string   $string                The string to translate
-     * @param   boolean  $jsSafe                Make the result JavaScript safe
-     * @param   boolean  $interpretBackSlashes  Interpret \t and \n
-     *
-     * @return  string  The translation of the string
-     *
      * @since   2.0.0-alpha
      */
     public function translate(string $string, bool $jsSafe = false, bool $interpretBackSlashes = true): string
@@ -321,33 +293,6 @@ class Language
     public function getPluralSuffixes($count)
     {
         return $this->localise->getPluralSuffixes($count);
-    }
-
-    /**
-     * Checks if a language exists.
-     *
-     * This is a simple, quick check for the directory that should contain language files for the given user.
-     *
-     * @param   string  $lang      Language to check.
-     * @param   string  $basePath  Optional path to check.
-     *
-     * @return  boolean  True if the language exists.
-     *
-     * @see     LanguageHelper::exists()
-     * @since   1.0
-     * @deprecated  3.0  Use LanguageHelper::exists() instead
-     */
-    public static function exists($lang, $basePath = '')
-    {
-        trigger_deprecation(
-            'joomla/language',
-            '2.0.0',
-            '%s() is deprecated and will be removed in 3.0, use %s::exists() instead.',
-            __METHOD__,
-            LanguageHelper::class
-        );
-
-        return (new LanguageHelper())->exists($lang, $basePath);
     }
 
     /**
@@ -735,80 +680,6 @@ class Language
     }
 
     /**
-     * Returns a associative array holding the metadata.
-     *
-     * @param   string  $lang      The name of the language.
-     * @param   string  $basePath  The filepath to the language folder.
-     *
-     * @return  mixed  If $lang exists return key/value pair with the language metadata, otherwise return NULL.
-     *
-     * @see     LanguageHelper::getMetadata()
-     * @since   1.0
-     * @deprecated  3.0  Use LanguageHelper::getMetadata() instead
-     */
-    public static function getMetadata($lang, $basePath)
-    {
-        trigger_deprecation(
-            'joomla/language',
-            '2.0.0',
-            '%s() is deprecated and will be removed in 3.0, use %s::getMetadata() instead.',
-            __METHOD__,
-            LanguageHelper::class
-        );
-
-        return (new LanguageHelper())->getMetadata($lang, $basePath);
-    }
-
-    /**
-     * Returns a list of known languages for an area
-     *
-     * @param   string  $basePath  The basepath to use
-     *
-     * @return  array  key/value pair with the language file and real name.
-     *
-     * @see     LanguageHelper::getKnownLanguages()
-     * @since   1.0
-     * @deprecated  3.0  Use LanguageHelper::getKnownLanguages() instead
-     */
-    public static function getKnownLanguages($basePath = '')
-    {
-        trigger_deprecation(
-            'joomla/language',
-            '2.0.0',
-            '%s() is deprecated and will be removed in 3.0, use %s::getKnownLanguages() instead.',
-            __METHOD__,
-            LanguageHelper::class
-        );
-
-        return (new LanguageHelper())->getKnownLanguages($basePath);
-    }
-
-    /**
-     * Get the path to a language
-     *
-     * @param   string  $basePath  The basepath to use.
-     * @param   string  $language  The language tag.
-     *
-     * @return  string  language related path or null.
-     *
-     * @see     LanguageHelper::getLanguagePath()
-     * @since   1.0
-     * @deprecated  3.0  Use LanguageHelper::getLanguagePath() instead
-     */
-    public static function getLanguagePath($basePath = '', $language = '')
-    {
-        trigger_deprecation(
-            'joomla/language',
-            '2.0.0',
-            '%s() is deprecated and will be removed in 3.0, use %s::getLanguagePath() instead.',
-            __METHOD__,
-            LanguageHelper::class
-        );
-
-        return (new LanguageHelper())->getLanguagePath($basePath, $language);
-    }
-
-    /**
      * Get the current language code.
      *
      * @return  string  The language code
@@ -886,53 +757,5 @@ class Language
     public function getWeekEnd(): string
     {
         return $this->metadata['weekEnd'] ?? '0,6';
-    }
-
-    /**
-     * Searches for language directories within a certain base dir.
-     *
-     * @param   string  $dir  directory of files.
-     *
-     * @return  array  Array holding the found languages as filename => real name pairs.
-     *
-     * @see     LanguageHelper::parseLanguageFiles()
-     * @since   1.0
-     * @deprecated  3.0  Use LanguageHelper::parseLanguageFiles() instead
-     */
-    public static function parseLanguageFiles($dir = null)
-    {
-        trigger_deprecation(
-            'joomla/language',
-            '2.0.0',
-            '%s() is deprecated and will be removed in 3.0, use %s::parseLanguageFiles() instead.',
-            __METHOD__,
-            LanguageHelper::class
-        );
-
-        return (new LanguageHelper())->parseLanguageFiles($dir);
-    }
-
-    /**
-     * Parse XML file for language information.
-     *
-     * @param   string  $path  Path to the XML files.
-     *
-     * @return  mixed  Array holding the found metadata as a key => value pair or null on an invalid XML file
-     *
-     * @see     LanguageHelper::parseXMLLanguageFile()
-     * @since   1.0
-     * @deprecated  3.0  Use LanguageHelper::parseXMLLanguageFile() instead
-     */
-    public static function parseXmlLanguageFile($path)
-    {
-        trigger_deprecation(
-            'joomla/language',
-            '2.0.0',
-            '%s() is deprecated and will be removed in 3.0, use %s::parseXmlLanguageFile() instead.',
-            __METHOD__,
-            LanguageHelper::class
-        );
-
-        return (new LanguageHelper())->parseXMLLanguageFile($path);
     }
 }
