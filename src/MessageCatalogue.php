@@ -19,7 +19,7 @@ class MessageCatalogue
     /**
      * A fallback for this catalogue
      *
-     * @var    MessageCatalogue
+     * @var    ?MessageCatalogue
      * @since  2.0.0-alpha
      */
     private $fallbackCatalogue;

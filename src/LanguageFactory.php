@@ -103,31 +103,25 @@ class LanguageFactory
             return new $class();
         }
 
-        $paths = [];
-
         $basePath = $basePath ?: $this->getLanguageDirectory();
 
         // Get the LanguageHelper to set the proper language directory
         $basePath = (new LanguageHelper())->getLanguagePath($basePath);
 
-        // Explicitly set the keys to define the lookup order
-        $paths[0] = $basePath . "/overrides/$lang.localise.php";
-        $paths[1] = $basePath . "/$lang/$lang.localise.php";
+        $paths = [
+            $basePath . "/overrides/$lang.localise.php",
+            $basePath . "/$lang/$lang.localise.php",
+        ];
 
-        ksort($paths);
-        $path = reset($paths);
-
-        while (!class_exists($class) && $path) {
+        foreach ($paths as $path) {
             if (file_exists($path)) {
                 require_once $path;
+
+                /* @phpstan-ignore if.alwaysFalse */
+                if (class_exists($class)) {
+                    return new $class();
+                }
             }
-
-            $path = next($paths);
-        }
-
-        // If we have found a match initialise it and return it
-        if (class_exists($class)) {
-            return new $class();
         }
 
         // Return the en_GB class if no specific instance is found

@@ -229,7 +229,7 @@ class Text
      *
      * @param   string  $string  The format string.
      *
-     * @return  string|null  The translated string
+     * @return  int  The length of the outputted string
      *
      * @note    This method can take a mixed number of arguments for the printf function
      * @since   1.0
