@@ -1,0 +1,36 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: src/Language.php
+
+		-
+			message: "#^Elseif condition is always false\\.$#"
+			count: 1
+			path: src/Language.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: src/LanguageFactory.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
+			path: src/LanguageFactory.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 2
+			path: src/MessageCatalogue.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 2
+			path: src/MessageCatalogue.php
+
+		-
+			message: "#^Method Joomla\\\\Language\\\\Text\\:\\:printf\\(\\) should return string\\|null but returns int\\.$#"
+			count: 1
+			path: src/Text.php
