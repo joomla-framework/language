@@ -21,7 +21,7 @@
         <exclude name="Generic.Files.LineLength.TooLong"/>
     </rule>
 
-    <rule ref="Squiz.Classes.ValidClassName.NotCamelCaps">
+    <rule ref="Squiz.Classes.ValidClassName.NotPascalCase">
         <exclude-pattern type="relative">src/Localise/En_GBLocalise\.php</exclude-pattern>
     </rule>
 
