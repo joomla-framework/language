@@ -53,3 +53,46 @@ if (count($language->debugFile('/var/www/jfw-application/language/en-GB/en-GB.in
 	// Application logic to display errors
 }
 ```
+
+## Things to know before you build on this
+
+**The language tag becomes part of a file path without validation.** `LanguageHelper::getLanguagePath()`
+concatenates the tag onto the base path, and `Language::load()` builds
+`"$path/$lang.$extension.ini"` from it. If the tag comes from a request parameter — the usual way
+to switch languages — validate it before it reaches the package:
+
+```php
+$lang = $input->getCmd('lang', 'en-GB');
+
+if (!preg_match('/^[a-z]{2,3}-[A-Z]{2}$/', $lang)) {
+    $lang = 'en-GB';
+}
+```
+
+The same applies to the `$extension` argument of `load()`.
+
+**`Text::sprintf()` uses the translation as the format string.** A translation containing more
+placeholders than you pass raises an `ArgumentCountError`, and one containing `%1$s` can reach
+arguments you did not intend to show. Translations often come from third-party language packs, so
+treat them as input you do not fully control:
+
+```php
+// The format string here is whatever the .ini file says
+Text::sprintf('COM_EXAMPLE_GREETING', $name);
+```
+
+**Translations are not escaped.** `translate()` returns the raw string; only optional JavaScript
+escaping and backslash interpretation are applied. Language files may legitimately contain HTML, so
+escaping is the caller's decision — make it deliberately.
+
+**A failed parse reports the file name and the error the wrong way round.** `IniParser::loadFile()`
+builds its exception message with the arguments swapped, so the message reads
+`Could not process file <error>: <path>`. Read it accordingly until it is fixed.
+
+**Keys not matching `[A-Z][A-Z0-9_*.-]*` are dropped silently.** The INI parser validates keys and
+skips anything else — including lower-case keys — without a warning. The same happens for lines
+without `=` and for multi-dimensional array keys.
+
+**`OutputFilter::setLanguage()` stores the instance statically.** `Joomla\Filter\OutputFilter`
+keeps whatever language you hand it for the rest of the process, which is worth knowing when more
+than one language is in play.
