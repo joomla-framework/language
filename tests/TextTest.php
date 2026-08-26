@@ -7,17 +7,29 @@
 
 namespace Joomla\Language\Tests;
 
+use Joomla\Language\Language;
 use Joomla\Language\LanguageFactory;
+use Joomla\Language\LanguageHelper;
+use Joomla\Language\MessageCatalogue;
 use Joomla\Language\Parser\IniParser;
 use Joomla\Language\ParserRegistry;
 use Joomla\Language\Text;
-use Joomla\Language\Language;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Joomla\Language\Text.
  */
+#[CoversClass(Text::class)]
+#[UsesClass(IniParser::class)]
+#[UsesClass(Language::class)]
+#[UsesClass(LanguageFactory::class)]
+#[UsesClass(LanguageHelper::class)]
+#[UsesClass(MessageCatalogue::class)]
+#[UsesClass(ParserRegistry::class)]
 class TextTest extends TestCase
 {
     /**
@@ -75,28 +87,14 @@ class TextTest extends TestCase
         $this->object = new Text($language);
     }
 
-    /**
-     * @testdox  Verify that Text is instantiated correctly
-     *
-     * @covers   \Joomla\Language\Text
-     */
     #[DoesNotPerformAssertions]
+    #[TestDox('Verify that Text is instantiated correctly')]
     public function testVerifyThatTextIsInstantiatedCorrectly()
     {
         new Text(new Language($this->parserRegistry, self::$testPath));
     }
 
-    /**
-     * @testdox  Verify that the Language object can be managed
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that the Language object can be managed')]
     public function testSetGetLanguage()
     {
         $language = new Language($this->parserRegistry, self::$testPath, 'de-DE');
@@ -105,193 +103,73 @@ class TextTest extends TestCase
         $this->assertSame($language, $this->object->getLanguage());
     }
 
-    /**
-     * @testdox  Verify that Text::translate() returns an empty string when one is input
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::translate() returns an empty string when one is input')]
     public function testTranslateReturnsEmptyStringWhenGivenAnEmptyString()
     {
         $this->assertEmpty($this->object->translate(''));
     }
 
-    /**
-     * @testdox  Verify that Text::translate() returns the correct string for a key
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::translate() returns the correct string for a key')]
     public function testTranslateReturnsTheCorrectStringForAKey()
     {
         $this->assertSame('Bar', $this->object->translate('Bar'));
     }
 
-    /**
-     * @testdox  Verify that Text::translate() returns the correct string for a key with named parameters
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::translate() returns the correct string for a key with named parameters')]
     public function testTranslateReturnsTheCorrectStringForAKeyWithNamedParameters()
     {
         $this->assertSame('Bar None', $this->object->translate('Bar %value%', ['%value%' => 'None']));
     }
 
-    /**
-     * @testdox  Verify that Text::translate() returns a JavaScript safe string
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::translate() returns a JavaScript safe string')]
     public function testTranslateReturnsAJavascriptSafeKey()
     {
         $this->assertSame('foobar\\\'s', $this->object->translate('foobar\'s', [], true));
     }
 
-    /**
-     * @testdox  Verify that Text::alt() returns the correct string for a key with no alt
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::alt() returns the correct string for a key with no alt')]
     public function testAltReturnsTheCorrectStringForAKey()
     {
         $this->assertSame('Bar', $this->object->alt('FOO', ''));
     }
 
-    /**
-     * @testdox  Verify that Text::alt() returns the correct string for a key with an alt
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::alt() returns the correct string for a key with an alt')]
     public function testAltReturnsTheCorrectStringForAKeyWithAlt()
     {
         $this->assertSame('Car', $this->object->alt('FOO', 'GOO'));
     }
 
-    /**
-     * @testdox  Verify that Text::alt() returns the correct string for a key with an alt and named parameters
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::alt() returns the correct string for a key with an alt and named parameters')]
     public function testAltReturnsTheCorrectStringForAKeyWithAltAndNamedParameters()
     {
         $this->assertSame('Green Car', $this->object->alt('FOO', 'BOO', ['%description%' => 'Green']));
     }
 
-    /**
-     * @testdox  Verify that Text::plural() returns the input key when no plural key is found
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::plural() returns the input key when no plural key is found')]
     public function testPluralReturnsInputKeyWhenNoParamsPassed()
     {
         $this->assertSame('BAR', $this->object->plural('BAR', 0));
     }
 
-    /**
-     * @testdox  Verify that Text::plural() returns the translated string when the pluralised key is found
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::plural() returns the translated string when the pluralised key is found')]
     public function testPluralReturnsTranslatedStringWhenPluralisedKeyFound()
     {
         $this->assertSame('3 Bars', $this->object->plural('BAR', 3));
     }
 
-    /**
-     * @testdox  Verify that Text::sprintf() returns the input key when no key is found
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::sprintf() returns the input key when no key is found')]
     public function testSprintfReturnsInputKeyWhenKeyNotFound()
     {
         $this->assertSame('BAR_NONE', $this->object->sprintf('BAR_NONE', 0));
     }
 
-    /**
-     * @testdox  Verify that Text::sprintf() returns the translated string when the specified key is found
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::sprintf() returns the translated string when the specified key is found')]
     public function testSprintfReturnsTranslatedStringWhenKeyFound()
     {
         $this->assertSame('I have 3 cars!', $this->object->sprintf('MANY_CARS', 3));
     }
 
-    /**
-     * @testdox  Verify that Text::printf() returns the input key when no key is found
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::printf() returns the input key when no key is found')]
     public function testPrintfReturnsEmptyStringWhenKeyNotFound()
     {
         ob_start();
@@ -301,17 +179,7 @@ class TextTest extends TestCase
         $this->assertSame('BAR_NONE', $return);
     }
 
-    /**
-     * @testdox  Verify that Text::printf() returns the translated string when the specified key is found
-     *
-     * @covers   Joomla\Language\Text
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that Text::printf() returns the translated string when the specified key is found')]
     public function testPrintfReturnsTranslatedStringWhenKeyFound()
     {
         ob_start();

@@ -9,14 +9,28 @@ namespace Joomla\Language\Tests;
 
 use Joomla\Language\Language;
 use Joomla\Language\LanguageFactory;
+use Joomla\Language\LanguageHelper;
 use Joomla\Language\Localise\En_GBLocalise;
+use Joomla\Language\MessageCatalogue;
+use Joomla\Language\Parser\IniParser;
+use Joomla\Language\ParserRegistry;
 use Joomla\Language\Stemmer\Porteren;
 use Joomla\Language\Text;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Joomla\Language\Language.
  */
+#[CoversClass(LanguageFactory::class)]
+#[UsesClass(IniParser::class)]
+#[UsesClass(Language::class)]
+#[UsesClass(LanguageHelper::class)]
+#[UsesClass(MessageCatalogue::class)]
+#[UsesClass(ParserRegistry::class)]
+#[UsesClass(Text::class)]
 class LanguageFactoryTest extends TestCase
 {
     /**
@@ -47,42 +61,25 @@ class LanguageFactoryTest extends TestCase
         $this->object   = new LanguageFactory();
     }
 
-    /**
-     * @testdox  Verify the default return of getDefaultLanguage()
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify the default return of getDefaultLanguage()')]
     public function testTheDefaultReturnOfGetDefaultLanguage()
     {
         $this->assertSame('en-GB', $this->object->getDefaultLanguage());
     }
 
-    /**
-     * @testdox  Verify the default return of getLanguageDirectory()
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify the default return of getLanguageDirectory()')]
     public function testTheDefaultReturnOfGetLanguageDirectory()
     {
         $this->assertEmpty($this->object->getLanguageDirectory());
     }
 
-    /**
-     * @testdox  Verify that getLocalise() returns the default localise class when none exists
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that getLocalise() returns the default localise class when none exists')]
     public function testVerifyGetLocaliseReturnsDefaultLocaliseWhenNoneExists()
     {
         $this->assertInstanceOf(En_GBLocalise::class, $this->object->getLocalise('fr-FR', $this->testPath));
     }
 
-    /**
-     * @testdox  Verify that getLocalise() returns the correct localise class when it exists
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify that getLocalise() returns the correct localise class when it exists')]
     public function testVerifyGetLocaliseReturnedWhenExists()
     {
         // Class exists check in PHPUnit happens before we import the file in our method
@@ -91,11 +88,7 @@ class LanguageFactoryTest extends TestCase
         $this->assertInstanceOf('\\Xx_XXLocalise', $this->object->getLocalise('xx-XX', $this->testPath));
     }
 
-    /**
-     * @testdox  Verify that getLocalise() validates the cache when a localise object exists
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify that getLocalise() validates the cache when a localise object exists')]
     public function testVerifyGetLocaliseValidatesTheCacheWhenALocaliseObjectExists()
     {
         // Class exists check in PHPUnit happens before we import the file in our method
@@ -107,30 +100,13 @@ class LanguageFactoryTest extends TestCase
         $this->assertInstanceOf('\\Xx_XXLocalise', $this->object->getLocalise('xx-XX', $this->testPath));
     }
 
-    /**
-     * @testdox  Verify that getLanguage() returns a Language object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that getLanguage() returns a Language object')]
     public function testVerifyGetLanguageReturnsALanguageObject()
     {
         $this->assertInstanceOf(Language::class, $this->object->getLanguage(null, $this->testPath));
     }
 
-    /**
-     * @testdox  Verify that getLanguage() throws an \InvalidArgumentException when no path is given
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     */
+    #[TestDox('Verify that getLanguage() throws an \InvalidArgumentException when no path is given')]
     public function testVerifyGetLanguageThrowsAnExceptionWhenNoPathIsGiven()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -138,38 +114,20 @@ class LanguageFactoryTest extends TestCase
         $this->object->getLanguage('es-ES');
     }
 
-    /**
-     * @testdox  Verify that getText() returns a Text object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     * @uses     Joomla\Language\Language
-     * @uses     Joomla\Language\LanguageHelper
-     * @uses     Joomla\Language\MessageCatalogue
-     * @uses     Joomla\Language\ParserRegistry
-     * @uses     Joomla\Language\Parser\IniParser
-     * @uses     Joomla\Language\Text
-     */
+    #[TestDox('Verify that getText() returns a Text object')]
     public function testVerifyThatGetTextReturnsATextObject()
     {
         $language = $this->object->getLanguage(null, $this->testPath);
         $this->assertInstanceOf(Text::class, $this->object->getText($language));
     }
 
-    /**
-     * @testdox  Verify getInstance() returns an instance of the correct object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify getInstance() returns an instance of the correct object')]
     public function testGetStemmerReturnsAnInstanceOfTheCorrectObject()
     {
         $this->assertInstanceOf(Porteren::class, $this->object->getStemmer('porteren'));
     }
 
-    /**
-     * @testdox  Verify getInstance() returns an instance of the correct object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify getInstance() returns an instance of the correct object')]
     public function testGetStemmerThrowsAnExceptionIfTheObjectDoesNotExist()
     {
         $this->expectException(\RuntimeException::class);
@@ -177,31 +135,19 @@ class LanguageFactoryTest extends TestCase
         $this->object->getStemmer('unexisting');
     }
 
-    /**
-     * @testdox  Verify setDefaultLanguage() returns the current object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify setDefaultLanguage() returns the current object')]
     public function testSetDefaultLanguageReturnsTheCurrentObject()
     {
         $this->assertSame($this->object, $this->object->setDefaultLanguage('en-US'));
     }
 
-    /**
-     * @testdox  Verify setLanguageDirectory() returns the current object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify setLanguageDirectory() returns the current object')]
     public function testSetLanguageDirectoryReturnsTheCurrentObject()
     {
         $this->assertSame($this->object, $this->object->setLanguageDirectory($this->testPath));
     }
 
-    /**
-     * @testdox  Verify setLanguageDirectory() throws an exception when a path does not exist
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify setLanguageDirectory() throws an exception when a path does not exist')]
     public function testSetLanguageDirectoryThrowsAnExceptionWhenAPathDoesNotExist()
     {
         $this->expectException(\InvalidArgumentException::class);

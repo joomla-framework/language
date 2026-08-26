@@ -8,12 +8,14 @@
 namespace Joomla\Language\Tests\Stemmer;
 
 use Joomla\Language\Stemmer\Porteren;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Porteren.
  */
+#[CoversClass(Porteren::class)]
 class PorterenTest extends TestCase
 {
     /**
@@ -160,8 +162,6 @@ class PorterenTest extends TestCase
      * @param   string  $token   The token to stem.
      * @param   string  $result  The expected result
      * @param   string  $lang    The language of the token.
-     *
-     * @covers  \Joomla\Language\Stemmer\Porteren
      */
     #[DataProvider('dataStemProvider')]
     public function testTheCorrectStemIsReturnedFromAGivenString($token, $result, $lang)

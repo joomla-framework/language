@@ -11,20 +11,20 @@ namespace Joomla\Language\Tests\Localise;
 
 use Joomla\Language\Localise\AbstractLocalise;
 use Joomla\Language\Tests\stubs\StubLocalise;
-use PHPUnit\Framework\MockObject\MockObject;
+use Joomla\Language\Transliterate;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Joomla\Language\Localise\AbstractLocalise.
  */
+#[CoversClass(AbstractLocalise::class)]
+#[UsesClass(Transliterate::class)]
 class AbstractLocaliseTest extends TestCase
 {
-    /**
-     * @testdox  Verify that the transliterate method calls the defined transliterator
-     *
-     * @covers   \Joomla\Language\Localise\AbstractLocalise
-     * @uses     \Joomla\Language\Transliterate
-     */
+    #[TestDox('Verify that the transliterate method calls the defined transliterator')]
     public function testTransliterateCallsDefinedTransliterator()
     {
         $localise = new StubLocalise();
@@ -32,11 +32,7 @@ class AbstractLocaliseTest extends TestCase
         $this->assertSame('asi', $localise->transliterate('Así'));
     }
 
-    /**
-     * @testdox  Verify that the plural suffixes are returned
-     *
-     * @covers   Joomla\Language\Localise\AbstractLocalise
-     */
+    #[TestDox('Verify that the plural suffixes are returned')]
     public function testGetPluralSuffixesCallsTheDefinedMethod()
     {
         $localise = new StubLocalise();

@@ -8,11 +8,14 @@
 namespace Joomla\Language\Tests;
 
 use Joomla\Language\LanguageHelper;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Joomla\Language\LanguageHelper.
  */
+#[CoversClass(LanguageHelper::class)]
 class LanguageHelperTest extends TestCase
 {
     /**
@@ -43,91 +46,55 @@ class LanguageHelperTest extends TestCase
         $this->object   = new LanguageHelper();
     }
 
-    /**
-     * @testdox  Verify that LanguageHelper::exists() locates the language directory
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that LanguageHelper::exists() locates the language directory')]
     public function testVerifyExistsLocatesTheLanguageDirectory()
     {
         $this->assertTrue($this->object->exists('en-GB', $this->testPath));
     }
 
-    /**
-     * @testdox  Verify that LanguageHelper::getMetadata() returns the language metadata
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that LanguageHelper::getMetadata() returns the language metadata')]
     public function testVerifyGetMetadataReturnsTheLanguageMetadata()
     {
         $this->assertIsArray($this->object->getMetadata('en-GB', $this->testPath));
     }
 
-    /**
-     * @testdox  Verify that LanguageHelper::getMetadata() returns null if metadata does not exist
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that LanguageHelper::getMetadata() returns null if metadata does not exist')]
     public function testVerifyGetMetadataReturnsNullIfMetadataDoesNotExist()
     {
         $this->assertNull($this->object->getMetadata('es-ES', $this->testPath));
     }
 
-    /**
-     * @testdox  Verify that Language::getKnownLanguages() returns an array of known languages
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that Language::getKnownLanguages() returns an array of known languages')]
     public function testVerifyGetKnownLanguagesReturnsAnArrayOfKnownLanguages()
     {
         $this->assertIsArray($this->object->getKnownLanguages($this->testPath));
     }
 
-    /**
-     * @testdox  Verify that Language::getLanguagePath() returns the correct language path
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that Language::getLanguagePath() returns the correct language path')]
     public function testVerifyGetLanguagePathReturnsTheCorrectLanguagePath()
     {
         $this->assertSame($this->testPath . '/language', $this->object->getLanguagePath($this->testPath));
     }
 
-    /**
-     * @testdox  Verify that Language::parseLanguageFiles() returns an array
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that Language::parseLanguageFiles() returns an array')]
     public function testVerifyParseLanguageFilesReturnsAnArray()
     {
         $this->assertIsArray($this->object->parseLanguageFiles($this->testPath));
     }
 
-    /**
-     * @testdox  Verify that Language::parseXMLLanguageFile() returns an array
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that Language::parseXMLLanguageFile() returns an array')]
     public function testVerifyParseXMLLanguageFileReturnsAnArray()
     {
         $this->assertIsArray($this->object->parseXMLLanguageFile($this->testPath . '/language/en-GB/en-GB.xml'));
     }
 
-    /**
-     * @testdox  Verify that Language::parseXMLLanguageFile() returns null if the top XML tag is not metafile
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that Language::parseXMLLanguageFile() returns null if the top XML tag is not metafile')]
     public function testVerifyParseXMLLanguageFileReturnsNullIfTheTopXMLTagIsNotMetafile()
     {
         $this->assertNull($this->object->parseXMLLanguageFile($this->testPath . '/language/xx-XX/xx-XX.xml'));
     }
 
-    /**
-     * @testdox  Verify that Language::parseXMLLanguageFile() throws an exception if the file is not found
-     *
-     * @covers   Joomla\Language\LanguageHelper
-     */
+    #[TestDox('Verify that Language::parseXMLLanguageFile() throws an exception if the file is not found')]
     public function testVerifyParseXMLLanguageFileThrowsAnExceptionIfTheFileIsNotFound()
     {
         $this->expectException(\RuntimeException::class);
