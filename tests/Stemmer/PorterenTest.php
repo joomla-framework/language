@@ -166,6 +166,6 @@ class PorterenTest extends TestCase
     #[DataProvider('dataStemProvider')]
     public function testTheCorrectStemIsReturnedFromAGivenString($token, $result, $lang)
     {
-        $this->assertEquals($result, $this->object->stem($token, $lang));
+        $this->assertSame($result, $this->object->stem($token, $lang));
     }
 }

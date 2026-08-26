@@ -71,6 +71,6 @@ class TransliterateTest extends TestCase
     #[TestDox('Verify a UTF-8 string is transliterated correctly')]
     public function testVerifyAUTF8StringIsTransliteratedCorrectly($word, $result, $case)
     {
-        $this->assertEquals($result, $this->object->utf8_latin_to_ascii($word, $case));
+        $this->assertSame($result, $this->object->utf8_latin_to_ascii($word, $case));
     }
 }

@@ -192,13 +192,13 @@ class LanguageTest extends TestCase
     #[TestDox('Verify that Language::get() returns the correct metadata')]
     public function testVerifyThatGetReturnsTheCorrectMetadata()
     {
-        $this->assertEquals('en-GB', $this->object->get('tag'));
+        $this->assertSame('en-GB', $this->object->get('tag'));
     }
 
     #[TestDox('Verify that Language::get() returns the default if metadata does not exist')]
     public function testVerifyThatGetReturnsTheDefaultIfMetadataDoesNotExist()
     {
-        $this->assertEquals('default', $this->object->get('doesnotexist', 'default'));
+        $this->assertSame('default', $this->object->get('doesnotexist', 'default'));
     }
 
     #[TestDox('Verify that Language::getBasePath() returns the correct path')]
