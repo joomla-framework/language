@@ -8,12 +8,15 @@
 namespace Joomla\Language\Tests;
 
 use Joomla\Language\Transliterate;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Transliterate.
  */
+#[CoversClass(Transliterate::class)]
 class TransliterateTest extends TestCase
 {
     /**
@@ -60,17 +63,14 @@ class TransliterateTest extends TestCase
     }
 
     /**
-     * @testdox  Verify a UTF-8 string is transliterated correctly
-     *
      * @param   string   $word    Word to transliterate
      * @param   string   $result  Expected test result
      * @param   integer  $case    Optionally specify upper or lower case. Default to 0 (both).
-     *
-     * @covers  \Joomla\Language\Transliterate
      */
     #[DataProvider('dataProvider')]
+    #[TestDox('Verify a UTF-8 string is transliterated correctly')]
     public function testVerifyAUTF8StringIsTransliteratedCorrectly($word, $result, $case)
     {
-        $this->assertEquals($result, $this->object->utf8_latin_to_ascii($word, $case));
+        $this->assertSame($result, $this->object->utf8_latin_to_ascii($word, $case));
     }
 }

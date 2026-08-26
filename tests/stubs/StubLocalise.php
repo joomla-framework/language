@@ -10,8 +10,6 @@
 namespace Joomla\Language\Tests\stubs;
 
 use Joomla\Language\Localise\AbstractLocalise;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Joomla\Language\Localise\AbstractLocalise.

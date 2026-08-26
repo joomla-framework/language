@@ -11,11 +11,16 @@ use Joomla\DI\Container;
 use Joomla\Language\LanguageFactory;
 use Joomla\Language\Service\LanguageFactoryProvider;
 use Joomla\Registry\Registry;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Joomla\Language\Service\LanguageFactoryProvider.
  */
+#[CoversClass(LanguageFactoryProvider::class)]
+#[UsesClass(LanguageFactory::class)]
 class LanguageFactoryProviderTest extends TestCase
 {
     /**
@@ -51,12 +56,7 @@ class LanguageFactoryProviderTest extends TestCase
         $this->container->set('config', $config);
     }
 
-    /**
-     * @testdox  Verify that the LanguageFactoryProvider returns a LanguageFactory object
-     *
-     * @covers   Joomla\Language\Service\LanguageFactoryProvider
-     * @uses     Joomla\Language\LanguageFactory
-     */
+    #[TestDox('Verify that the LanguageFactoryProvider returns a LanguageFactory object')]
     public function testVerifyTheLanguageObjectIsRegisteredToTheContainer()
     {
         $this->container->registerServiceProvider(new LanguageFactoryProvider());
