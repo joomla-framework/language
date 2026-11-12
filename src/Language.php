@@ -366,7 +366,8 @@ class Language
      *
      * @param   string  $filename  The name of the file.
      *
-     * @return  array  The array of parsed strings.
+     * @return  array  The array of parsed strings. Empty if the file could not be parsed, in which case the
+     *                  error is recorded in the list returned by getErrorFiles().
      *
      * @since   1.0
      */
@@ -375,7 +376,8 @@ class Language
         try {
             $strings = $this->parserRegistry->get(pathinfo($filename, PATHINFO_EXTENSION))->loadFile($filename);
         } catch (\RuntimeException $exception) {
-            // TODO - This shouldn't be absorbed
+            $this->errorfiles[$filename] = $exception->getMessage();
+
             $strings = [];
         }
 

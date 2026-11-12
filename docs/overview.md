@@ -85,9 +85,16 @@ Text::sprintf('COM_EXAMPLE_GREETING', $name);
 escaping and backslash interpretation are applied. Language files may legitimately contain HTML, so
 escaping is the caller's decision — make it deliberately.
 
-**A failed parse reports the file name and the error the wrong way round.** `IniParser::loadFile()`
-builds its exception message with the arguments swapped, so the message reads
-`Could not process file <error>: <path>`. Read it accordingly until it is fixed.
+**Values in INI files are taken literally.** `IniParser` parses language files in PHP's raw INI
+mode, so `${NAME}` in a translation stays as written instead of being replaced by an environment
+variable or a php.ini setting. Inside quoted values, `\"` and `\\` are unescaped to `"` and `\`
+as before. Unquoted values are no longer converted either: `KEY=yes` yields `yes` instead of `1`.
+Quote every value, as `debugFile()` requires anyway.
+
+**Files that cannot be parsed are recorded, not reported.** `Language::load()` returns `false` for
+a file with syntax errors and records it in `Language::getErrorFiles()` (file name => message,
+e.g. ``Could not process file `/path/en-GB.ini`: syntax error, ...``). Check that list when a
+translation is unexpectedly missing.
 
 **Keys not matching `[A-Z][A-Z0-9_*.-]*` are dropped silently.** The INI parser validates keys and
 skips anything else — including lower-case keys — without a warning. The same happens for lines

@@ -103,6 +103,10 @@ class IniParser implements DebugParserInterface
     /**
      * Load the strings from a file
      *
+     * The file is parsed in raw mode, so `${...}` in a value is kept as it is instead of being replaced by an
+     * environment variable or php.ini setting. Escaped quotes (`\"`) and backslashes (`\\`) inside quoted values are
+     * unescaped as before.
+     *
      * @param   string  $filename  The name of the file.
      *
      * @return  string[]
@@ -112,17 +116,35 @@ class IniParser implements DebugParserInterface
      */
     public function loadFile(string $filename): array
     {
-        $result = @parse_ini_file($filename);
+        $errorMessage = 'Unknown Error';
+
+        // Capture the warning directly, error_get_last() is not populated when a custom error handler is active
+        set_error_handler(
+            static function (int $errno, string $errstr) use (&$errorMessage): bool {
+                $errorMessage = $errstr;
+
+                return true;
+            }
+        );
+
+        try {
+            $result = parse_ini_file($filename, false, INI_SCANNER_RAW);
+        } finally {
+            restore_error_handler();
+        }
 
         if ($result === false) {
-            $lastError = error_get_last();
-
-            $errorMessage = $lastError['message'] ?? 'Unknown Error';
-
             throw new \RuntimeException(
-                sprintf('Could not process file `%s`: %s', $errorMessage, $filename)
+                sprintf('Could not process file `%s`: %s', $filename, $errorMessage)
             );
         }
+
+        array_walk_recursive(
+            $result,
+            static function (&$value): void {
+                $value = strtr($value, ['\\\\' => '\\', '\\"' => '"']);
+            }
+        );
 
         return $result;
     }
