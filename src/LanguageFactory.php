@@ -129,31 +129,6 @@ class LanguageFactory
     }
 
     /**
-     * Creates a new StemmerInterface instance for the requested adapter.
-     *
-     * @param   string  $adapter  The type of stemmer to load.
-     *
-     * @return  StemmerInterface
-     *
-     * @since   1.3.0
-     * @deprecated  5.0  Use wamania/php-stemmer instead
-     * @throws  \RuntimeException on invalid stemmer
-     */
-    public function getStemmer($adapter)
-    {
-        // Setup the adapter for the stemmer.
-        $class = __NAMESPACE__ . '\\Stemmer\\' . ucfirst(trim($adapter));
-
-        // Check if a stemmer exists for the adapter.
-        if (!class_exists($class)) {
-            // Throw invalid adapter exception.
-            throw new \RuntimeException(sprintf('Invalid stemmer type %s', $class));
-        }
-
-        return new $class();
-    }
-
-    /**
      * Retrieves a new Text object for a Language instance
      *
      * @param   Language|null  $language  An optional Language object to inject, otherwise the default object is loaded

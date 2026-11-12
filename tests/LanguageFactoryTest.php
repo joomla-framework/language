@@ -10,7 +10,6 @@ namespace Joomla\Language\Tests;
 use Joomla\Language\Language;
 use Joomla\Language\LanguageFactory;
 use Joomla\Language\Localise\En_GBLocalise;
-use Joomla\Language\Stemmer\Porteren;
 use Joomla\Language\Text;
 use PHPUnit\Framework\TestCase;
 
@@ -153,28 +152,6 @@ class LanguageFactoryTest extends TestCase
     {
         $language = $this->object->getLanguage(null, $this->testPath);
         $this->assertInstanceOf(Text::class, $this->object->getText($language));
-    }
-
-    /**
-     * @testdox  Verify getInstance() returns an instance of the correct object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
-    public function testGetStemmerReturnsAnInstanceOfTheCorrectObject()
-    {
-        $this->assertInstanceOf(Porteren::class, $this->object->getStemmer('porteren'));
-    }
-
-    /**
-     * @testdox  Verify getInstance() returns an instance of the correct object
-     *
-     * @covers   Joomla\Language\LanguageFactory
-     */
-    public function testGetStemmerThrowsAnExceptionIfTheObjectDoesNotExist()
-    {
-        $this->expectException(\RuntimeException::class);
-
-        $this->object->getStemmer('unexisting');
     }
 
     /**
