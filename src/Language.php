@@ -174,7 +174,7 @@ class Language
 
         $basePath = $this->helper->getLanguagePath($this->basePath);
 
-        $filename = $basePath . "/overrides/$lang.override.ini";
+        $filename = $basePath . "/overrides/{$this->lang}.override.ini";
 
         if (file_exists($filename) && $contents = $this->parse($filename)) {
             // Sort the underlying heap by key values to optimize merging
@@ -183,7 +183,7 @@ class Language
         }
 
         // Grab a localisation file
-        $this->localise = (new LanguageFactory())->getLocalise($lang, $path);
+        $this->localise = (new LanguageFactory())->getLocalise($this->lang, $path);
 
         $this->catalogue = new MessageCatalogue($this->lang);
 
