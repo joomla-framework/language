@@ -56,20 +56,28 @@ if (count($language->debugFile('/var/www/jfw-application/language/en-GB/en-GB.in
 
 ## Things to know before you build on this
 
-**The language tag becomes part of a file path without validation.** `LanguageHelper::getLanguagePath()`
-concatenates the tag onto the base path, and `Language::load()` builds
-`"$path/$lang.$extension.ini"` from it. If the tag comes from a request parameter — the usual way
-to switch languages — validate it before it reaches the package:
+**Language tags and extension names are validated.** The tag becomes part of file paths and, for
+the localisation class, of a PHP file that is included, so `Language`, `Language::load()`,
+`LanguageFactory::getLocalise()` and `LanguageHelper::getLanguagePath()` throw an
+`InvalidArgumentException` for anything that is not a well-formed tag: a primary subtag of two or
+three lowercase letters followed by hyphen-separated subtags of two to eight letters or digits
+(`en`, `en-GB`, `sr-Latn-RS`, `es-419`). `LanguageHelper::exists()` returns `false` and
+`LanguageHelper::getMetadata()` returns `null` for such a tag. Use `LanguageHelper::isValidLanguageTag()`
+to check a tag yourself. The `$extension` argument of `load()` may only contain letters, digits,
+`_`, `-` and `.` (but not `..`).
+
+If the tag comes from a request parameter — the usual way to switch languages — check it and fall
+back to a default instead of letting the exception surface:
 
 ```php
+use Joomla\Language\LanguageHelper;
+
 $lang = $input->getCmd('lang', 'en-GB');
 
-if (!preg_match('/^[a-z]{2,3}-[A-Z]{2}$/', $lang)) {
+if (!(new LanguageHelper())->exists($lang, '/var/www/jfw-application')) {
     $lang = 'en-GB';
 }
 ```
-
-The same applies to the `$extension` argument of `load()`.
 
 **`Text::sprintf()` uses the translation as the format string.** A translation containing more
 placeholders than you pass raises an `ArgumentCountError`, and one containing `%1$s` can reach

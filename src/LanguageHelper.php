@@ -30,7 +30,29 @@ class LanguageHelper
      */
     public function exists(string $lang, string $basePath): bool
     {
+        if (!$this->isValidLanguageTag($lang)) {
+            return false;
+        }
+
         return is_dir($this->getLanguagePath($basePath, $lang));
+    }
+
+    /**
+     * Checks whether a string is a well-formed language tag.
+     *
+     * Accepts tags like `en`, `en-GB`, `sr-Latn-RS` or `zh-Hant`: a primary subtag of two or three lowercase letters,
+     * followed by any number of subtags of two to eight letters or digits, each separated by a hyphen. Anything else,
+     * in particular path separators and `..`, is rejected, so a valid tag can safely be used in a file name.
+     *
+     * @param   string  $lang  The language tag to check.
+     *
+     * @return  boolean
+     *
+     * @since   __DEPLOY_VERSION__
+     */
+    public function isValidLanguageTag(string $lang): bool
+    {
+        return preg_match('/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/D', $lang) === 1;
     }
 
     /**
@@ -45,6 +67,10 @@ class LanguageHelper
      */
     public function getMetadata(string $lang, string $path): ?array
     {
+        if (!$this->isValidLanguageTag($lang)) {
+            return null;
+        }
+
         $path = $this->getLanguagePath($path, $lang);
         $file = $lang . '.xml';
 
@@ -84,12 +110,17 @@ class LanguageHelper
      * @return  string  Path to the language folder
      *
      * @since   2.0
+     * @throws  \InvalidArgumentException if the language tag is not a valid language tag
      */
     public function getLanguagePath(string $basePath, string $language = ''): string
     {
         $dir = $basePath . '/language';
 
         if (!empty($language)) {
+            if (!$this->isValidLanguageTag($language)) {
+                throw new \InvalidArgumentException(sprintf('Invalid language tag "%s"', $language));
+            }
+
             $dir .= '/' . $language;
         }
 

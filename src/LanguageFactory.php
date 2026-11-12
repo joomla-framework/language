@@ -87,9 +87,15 @@ class LanguageFactory
      * @return  LocaliseInterface
      *
      * @since   2.0
+     * @throws  \InvalidArgumentException if the language is not a valid language tag
      */
     public function getLocalise(string $lang, string $basePath = ''): LocaliseInterface
     {
+        // The tag becomes part of a class name and of the paths of PHP files that are included below
+        if ($lang !== '' && !(new LanguageHelper())->isValidLanguageTag($lang)) {
+            throw new \InvalidArgumentException(sprintf('Invalid language tag "%s"', $lang));
+        }
+
         /*
          * Look for a language specific localise class
          *

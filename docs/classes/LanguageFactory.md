@@ -100,3 +100,7 @@ $language = $languageFactory->getLocalise('en-GB');
 
 Note that if a class is found at the lookup path and does not implement the `LocaliseInterface` a `RuntimeException` is thrown.
 If a `LocaliseInterface` object is not found in the lookup path, a `En_GBLocalise` object will be returned as a default implementation.
+
+The language tag is used to build the class name and the paths of the `<tag>.localise.php` files that are included, so
+`getLocalise()` throws an `InvalidArgumentException` if `$lang` is not a well-formed language tag (see
+`LanguageHelper::isValidLanguageTag()`).

@@ -153,6 +153,7 @@ class Language
      * @param   boolean         $debug           Indicates if language debugging is enabled
      *
      * @since   1.0
+     * @throws  \InvalidArgumentException if the path is empty or the language is not a valid language tag
      */
     public function __construct(ParserRegistry $parserRegistry, string $path, string $lang = '', bool $debug = false)
     {
@@ -166,6 +167,10 @@ class Language
         $this->helper   = new LanguageHelper();
 
         $this->lang = $lang ?: $this->default;
+
+        if (!$this->helper->isValidLanguageTag($this->lang)) {
+            throw new \InvalidArgumentException(sprintf('Invalid language tag "%s"', $this->lang));
+        }
 
         $this->metadata = $this->helper->getMetadata($this->lang, $this->basePath);
         $this->setDebug($debug);
@@ -302,11 +307,20 @@ class Language
      * @return  boolean  True if the file has successfully loaded.
      *
      * @since   1.0
+     * @throws  \InvalidArgumentException if the extension name or the language tag is invalid
      */
     public function load($extension = 'joomla', $basePath = '', $lang = null, $reload = false)
     {
         $lang     = $lang ?: $this->lang;
         $basePath = $basePath ?: $this->basePath;
+
+        if (!preg_match('/^[a-z0-9_.-]*$/iD', (string) $extension) || str_contains((string) $extension, '..')) {
+            throw new \InvalidArgumentException(sprintf('Invalid extension name "%s"', $extension));
+        }
+
+        if (!$this->helper->isValidLanguageTag($lang)) {
+            throw new \InvalidArgumentException(sprintf('Invalid language tag "%s"', $lang));
+        }
 
         $path = $this->helper->getLanguagePath($basePath, $lang);
 
