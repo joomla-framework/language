@@ -41,9 +41,9 @@ class Language
     protected $orphans = [];
 
     /**
-     * Array holding the language metadata.
+     * Array holding the language metadata, null if the language has no metadata file.
      *
-     * @var    array
+     * @var    array|null
      * @since  1.0
      */
     protected $metadata;
@@ -492,13 +492,13 @@ class Language
     /**
      * Getter for Name.
      *
-     * @return  string  Official name element of the language.
+     * @return  string|null  Official name element of the language, null if the language has no metadata.
      *
      * @since   1.0
      */
     public function getName()
     {
-        return $this->metadata['name'];
+        return $this->metadata['name'] ?? null;
     }
 
     /**
@@ -534,25 +534,25 @@ class Language
     /**
      * Getter for the language tag (as defined in RFC 3066)
      *
-     * @return  string  The language tag.
+     * @return  string|null  The language tag, null if the language has no metadata.
      *
      * @since   1.0
      */
     public function getTag()
     {
-        return $this->metadata['tag'];
+        return $this->metadata['tag'] ?? null;
     }
 
     /**
      * Get the RTL property.
      *
-     * @return  boolean  True is it an RTL language.
+     * @return  boolean  True is it an RTL language, false if the language has no metadata.
      *
      * @since   1.0
      */
     public function isRtl()
     {
-        return (bool) $this->metadata['rtl'];
+        return (bool) ($this->metadata['rtl'] ?? false);
     }
 
     /**
