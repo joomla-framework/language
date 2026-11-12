@@ -26,6 +26,9 @@ $language = new Language('/var/www/jfw-application', 'en-GB');
 This will create a `Language` instance for the `en-GB` language and specifies that the base folder path is `/var/www/jfw-application`.
 Therefore, the XML metadata file should be stored to `/var/www/jfw-application/language/en-GB/en-GB.xml`.
 
+If no language is given, the default language (`en-GB`, see `Language::getDefault()`) is used, including its override
+file (`language/overrides/en-GB.override.ini`) and its localisation class.
+
 ### Translating Language Keys
 
 The `Text` class is responsible for translating language keys into a human friendly text string in the requested language.
