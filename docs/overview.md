@@ -71,8 +71,10 @@ if (!preg_match('/^[a-z]{2,3}-[A-Z]{2}$/', $lang)) {
 
 The same applies to the `$extension` argument of `load()`.
 
-**`Text::sprintf()` uses the translation as the format string.** A translation containing more
-placeholders than you pass raises an `ArgumentCountError`, and one containing `%1$s` can reach
+**`Text::sprintf()` uses the translation as the format string.** The same applies to `printf()`
+and `plural()`. If the translation does not fit the arguments — more placeholders than you pass, or
+an invalid specifier such as a trailing `%` — the untranslated key is returned (or printed) instead
+of raising an `ArgumentCountError` or `ValueError`. A translation containing `%1$s` can still reach
 arguments you did not intend to show. Translations often come from third-party language packs, so
 treat them as input you do not fully control:
 
@@ -80,6 +82,9 @@ treat them as input you do not fully control:
 // The format string here is whatever the .ini file says
 Text::sprintf('COM_EXAMPLE_GREETING', $name);
 ```
+
+An array passed as the last argument is taken as the options for `Language::translate()`
+(`['jsSafe' => true, 'interpretBackSlashes' => false]`) and is not passed on to `sprintf()`.
 
 **Translations are not escaped.** `translate()` returns the raw string; only optional JavaScript
 escaping and backslash interpretation are applied. Language files may legitimately contain HTML, so
