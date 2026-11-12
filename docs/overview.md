@@ -2,8 +2,8 @@
 
 The Language package provides an interface for managing internationalisation support and translations within an application.
 The base objects in the package, `Language` and `Text` are the primary classes used for configuring your application's
-language data and translating language keys. Additionally, support for [stemming](http://en.wikipedia.org/wiki/Stemming)
-and [transliteration](http://en.wikipedia.org/wiki/Transliteration) is also available via the `Stemmer` and `Transliterate` classes.
+language data and translating language keys. Additionally, support for
+[transliteration](http://en.wikipedia.org/wiki/Transliteration) is available via the `Transliterate` class.
 
 ### Language Package Structure
 
