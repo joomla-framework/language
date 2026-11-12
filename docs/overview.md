@@ -12,7 +12,8 @@ The base package requires the following files (note that `xx-XX` is used to repr
 
 - `xx-XX.ini` - The base language strings for an application.
 - `xx-XX.localise.php` - A localisation class to define language specific behaviours. This class must implement the `LocaliseInterface`.
-- `xx-XX.xml` - The metadata for a language.
+- `xx-XX.xml` - The metadata for a language. Without it, `Language::getName()` and `Language::getTag()` return `null`
+  and `Language::isRtl()` returns `false`.
 
 The base path to language packages must be specified when instantiating a `Language` instance. Language packages must be
 stored in a `language` folder within this base path, and each language stored in a separate folder by langauge code. For example:
