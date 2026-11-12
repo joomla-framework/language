@@ -13,6 +13,7 @@ namespace Joomla\Language;
  * Stemmer interface.
  *
  * @since  1.4.0
+ * @deprecated  5.0  Use wamania/php-stemmer instead
  */
 interface StemmerInterface
 {

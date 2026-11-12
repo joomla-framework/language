@@ -92,7 +92,8 @@ grep -rnE -- '->_\(|Language::(exists|getMetadata|getKnownLanguages|getLanguageP
 ## `Joomla\Language\Stemmer\Porteren` has been deprecated
 
 The English Porter stemmer bundled with this package is deprecated, as is
-`LanguageFactory::getStemmer()`. Both will be removed in 5.0. Use
+`LanguageFactory::getStemmer()`. Both will be removed in 5.0, and both trigger a deprecation
+notice (`E_USER_DEPRECATED` via `trigger_deprecation()`) when used. Use
 [`wamania/php-stemmer`](https://github.com/wamania/php-stemmer), which supports more than English:
 
 ```bash
@@ -106,8 +107,8 @@ $stemmer = StemmerFactory::create('de');
 $stemmer->stem('Häuser');
 ```
 
-`StemmerInterface` remains, so an adapter around another library still fits where the bundled
-stemmer did.
+`StemmerInterface` is deprecated as well and will be removed in 5.0, since nothing in the package
+uses it once the bundled stemmer is gone. Type against the stemmer library you use instead.
 
 ## Dependency changes
 

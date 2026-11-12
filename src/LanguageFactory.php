@@ -141,6 +141,13 @@ class LanguageFactory
      */
     public function getStemmer($adapter)
     {
+        trigger_deprecation(
+            'joomla/language',
+            '__DEPLOY_VERSION__',
+            '%s() is deprecated and will be removed in 5.0, use wamania/php-stemmer instead.',
+            __METHOD__
+        );
+
         // Setup the adapter for the stemmer.
         $class = __NAMESPACE__ . '\\Stemmer\\' . ucfirst(trim($adapter));
 
