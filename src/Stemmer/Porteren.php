@@ -48,6 +48,22 @@ class Porteren implements StemmerInterface
     private $regexVowel = '(?:[aeiou]|(?<![aeiou])y)';
 
     /**
+     * Constructor.
+     *
+     * @since       __DEPLOY_VERSION__
+     * @deprecated  5.0  Use wamania/php-stemmer instead
+     */
+    public function __construct()
+    {
+        trigger_deprecation(
+            'joomla/language',
+            '__DEPLOY_VERSION__',
+            '%s is deprecated and will be removed in 5.0, use wamania/php-stemmer instead.',
+            self::class
+        );
+    }
+
+    /**
      * Method to stem a token and return the root.
      *
      * @param   string  $token  The token to stem.

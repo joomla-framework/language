@@ -4,6 +4,8 @@ The Language package provides an interface for managing internationalisation sup
 The base objects in the package, `Language` and `Text` are the primary classes used for configuring your application's
 language data and translating language keys. Additionally, support for [stemming](http://en.wikipedia.org/wiki/Stemming)
 and [transliteration](http://en.wikipedia.org/wiki/Transliteration) is also available via the `Stemmer` and `Transliterate` classes.
+The bundled stemmer (`Stemmer\Porteren`, `LanguageFactory::getStemmer()` and `StemmerInterface`) is deprecated and will be
+removed in 5.0; see [Updating from v3 to v4](v3-to-v4-update.md) for the replacement.
 
 ### Language Package Structure
 
