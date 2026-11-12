@@ -96,3 +96,8 @@ without `=` and for multi-dimensional array keys.
 **`OutputFilter::setLanguage()` stores the instance statically.** `Joomla\Filter\OutputFilter`
 keeps whatever language you hand it for the rest of the process, which is worth knowing when more
 than one language is in play.
+
+**Malformed metadata files are ignored.** `LanguageHelper::parseXmlLanguageFile()` returns `null`
+without raising warnings when `xx-XX.xml` is not well-formed or has no `<metadata>` element, and
+it never fetches anything over the network while parsing. Such a language has no metadata and is
+left out of `LanguageHelper::getKnownLanguages()`.

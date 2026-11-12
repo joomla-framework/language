@@ -138,7 +138,8 @@ class LanguageHelper
      *
      * @param   string  $path  Path to the XML files.
      *
-     * @return  array|null  Array holding the found metadata as a key => value pair.
+     * @return  array|null  Array holding the found metadata as a key => value pair, null if the file is not a valid
+     *                      metadata file.
      *
      * @since   2.0
      * @throws  \RuntimeException
@@ -149,15 +150,22 @@ class LanguageHelper
             throw new \RuntimeException('File not found or not readable');
         }
 
-        // Try to load the file
-        $xml = simplexml_load_file($path);
+        // Try to load the file, without emitting warnings for malformed XML and without network access
+        $useInternalErrors = libxml_use_internal_errors(true);
+
+        try {
+            $xml = simplexml_load_file($path, null, LIBXML_NONET);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($useInternalErrors);
+        }
 
         if (!$xml) {
             return null;
         }
 
         // Check that it's a metadata file
-        if ((string) $xml->getName() != 'metafile') {
+        if ((string) $xml->getName() != 'metafile' || !isset($xml->metadata)) {
             return null;
         }
 
