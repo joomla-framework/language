@@ -124,6 +124,9 @@ class Text
      * jsSafe is a boolean to specify whether to make the result JavaScript safe.
      * interpretBackSlashes is a boolean to specify whether backslashes are interpreted (\\ -> \, \n -> new line, \t -> tab character).
      *
+     * The translation is used as the format string. If it does not match the arguments (too few arguments or an invalid
+     * format specifier), the untranslated key is returned instead.
+     *
      * @param   string   $string  The format string.
      * @param   integer  $n       The number of items
      *
@@ -159,16 +162,17 @@ class Text
         }
 
         if (\is_array($args[$count - 1])) {
+            $options = array_pop($args);
             $args[0] = $lang->translate(
                 $key,
-                $args[$count - 1]['jsSafe'] ?? false,
-                $args[$count - 1]['interpretBackSlashes'] ?? true
+                $options['jsSafe'] ?? false,
+                $options['interpretBackSlashes'] ?? true
             );
         } else {
             $args[0] = $lang->translate($key);
         }
 
-        return \sprintf(...$args);
+        return $this->format((string) $string, $args);
     }
 
     /**
@@ -186,6 +190,9 @@ class Text
      * jsSafe is a boolean to specify whether to make the result JavaScript safe.
      * interpretBackSlashes is a boolean to specify whether backslashes are interpreted (\\ -> \, \n -> new line, \t -> tab character).
      *
+     * The translation is used as the format string. If it does not match the arguments (too few arguments or an invalid
+     * format specifier), the untranslated key is returned instead.
+     *
      * @param   string  $string  The format string.
      *
      * @return  string|null  The translated string
@@ -200,16 +207,17 @@ class Text
         $count = \count($args);
 
         if (\is_array($args[$count - 1])) {
+            $options = array_pop($args);
             $args[0] = $lang->translate(
                 $string,
-                $args[$count - 1]['jsSafe'] ?? false,
-                $args[$count - 1]['interpretBackSlashes'] ?? true
+                $options['jsSafe'] ?? false,
+                $options['interpretBackSlashes'] ?? true
             );
         } else {
             $args[0] = $lang->translate($string);
         }
 
-        return \sprintf(...$args);
+        return $this->format((string) $string, $args);
     }
 
     /**
@@ -227,6 +235,9 @@ class Text
      * jsSafe is a boolean to specify whether to make the result JavaScript safe.
      * interpretBackSlashes is a boolean to specify whether backslashes are interpreted (\\ -> \, \n -> new line, \t -> tab character).
      *
+     * The translation is used as the format string. If it does not match the arguments (too few arguments or an invalid
+     * format specifier), the untranslated key is printed instead.
+     *
      * @param   string  $string  The format string.
      *
      * @return  int  The length of the outputted string
@@ -241,15 +252,40 @@ class Text
         $count = \count($args);
 
         if (\is_array($args[$count - 1])) {
+            $options = array_pop($args);
             $args[0] = $lang->translate(
                 $string,
-                $args[$count - 1]['jsSafe'] ?? false,
-                $args[$count - 1]['interpretBackSlashes'] ?? true
+                $options['jsSafe'] ?? false,
+                $options['interpretBackSlashes'] ?? true
             );
         } else {
             $args[0] = $lang->translate($string);
         }
 
-        return \printf(...$args);
+        $result = $this->format((string) $string, $args);
+
+        echo $result;
+
+        return \strlen($result);
+    }
+
+    /**
+     * Format a translated string with sprintf(), falling back to the untranslated key if the translation does not match
+     * the arguments.
+     *
+     * @param   string  $key   The untranslated key.
+     * @param   array   $args  The arguments for sprintf(), the translated format string first.
+     *
+     * @return  string
+     *
+     * @since   __DEPLOY_VERSION__
+     */
+    private function format(string $key, array $args): string
+    {
+        try {
+            return \sprintf(...$args);
+        } catch (\ArgumentCountError | \ValueError $exception) {
+            return $key;
+        }
     }
 }
